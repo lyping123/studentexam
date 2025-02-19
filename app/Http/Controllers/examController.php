@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\question;
 use App\Models\subject;
+use App\Models\subject_title;
 use Illuminate\Http\Request;
 
 class examController extends Controller
 {
     public function index(){
+        
         $subjects=subject::all();
         return view('index',compact('subjects'));
     }
@@ -19,6 +21,13 @@ class examController extends Controller
 
         ]);
 
+        $subject_title=subject_title::where('subject_title',$request->subject_title)->first();
+        if(!$subject_title){
+            $subject_title=subject_title::create([
+                'subject_title'=>$request->subject_title
+            ]);
+        }
+        
         if($request->hasFile('jsonFile')){
             $jsonFile = $request->file('jsonFile');
             $jsonData = file_get_contents($jsonFile->getPathname());
@@ -51,6 +60,13 @@ class examController extends Controller
         return redirect()->route('exam.index')->with('success','File uploaded successfully');
     }
 
+    public function search(Request $request){
+        $search=$request->input('search');
+        $subjects=subject::where('subject','like','%'.$search.'%')->get();
+        return view('index',compact('subjects'));
+    }
+
+    
     public function delete(request $request)
     {
 

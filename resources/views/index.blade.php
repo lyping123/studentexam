@@ -1,6 +1,17 @@
 @extends('layout')
 
 @section('content')
+<style>
+    .pagination .page-link {
+        font-size: 14px; /* Adjust text size */
+        padding: 8px 12px; /* Adjust spacing */
+    }
+
+    .pagination .page-item span,
+    .pagination .page-item a {
+        font-size: 16px; /* Adjust Next/Previous button size */
+    }
+</style>
 <div class="container mt-5">
     <h2 class="text-center mb-4">Upload Exam JSON File</h2>
 
@@ -11,6 +22,9 @@
             <div class="mb-3">
                 <label for="subject_title" class="form-label">Subject Name</label>
                 <input type="text" class="form-control" id="subject_title" name="subject_title" required>
+                <ul class="list-group" id="subjectList">
+                   
+                </ul>
             </div>
 
             <div class="mb-3">
@@ -21,15 +35,28 @@
             <button type="submit" class="btn btn-primary w-100">Upload & Submit</button>
         </form>
     </div>
+
+
     <div class="row">
+        
         <div class="col-md-12 mt-4">
             <h2 class="text-center mb-4">Exam subjects</h2>
-            <form method="POST" action="{{ route('exam.delete') }}">
-                @csrf
-                @method('DELETE')
-            <div class="d-flex justify-content-between mb-2">
-                <button type="submit" class="btn btn-danger">Delete</button>
+            
                 
+            <div class="d-flex justify-content-between mb-2">
+                <div class="col-md-6">
+                    <form action="{{ route('exam.search') }}" method="get">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Search by subject title" name="search" value="{{ request()->search }}">
+                            <button class="btn btn-outline-secondary" type="submit">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <form method="POST" action="{{ route('exam.delete') }}">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
             </div>
             <table class="table table-bordered">
                 <thead>
@@ -41,6 +68,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @unless ($subjects->count())
+                        <tr>
+                            <td colspan="4" class="text-center">No data found</td>
+                        </tr>
+                    @endunless
+
                     @foreach ($subjects as $subject)
                         <tr class="main-row" data-toggle="subtable-{{ $subject->id }}">
                             <td><input type="checkbox" name="checkid[]" value="{{ $subject->id }}" id=""></td>
@@ -78,6 +111,10 @@
                 </tbody>
             </table>
             </form>
+            
+            {{-- {{ $subjects->links() }} --}}
+            
+            
         </div>
     </div>
 </div>
@@ -92,6 +129,48 @@
             var target = $(this).closest("tr").data("toggle");
             $("#" + target).toggle();
         });
+
+        $("#subject_title").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            var csrf=$('meta[name="csrf-token"]').attr('content');
+            
+
+            if(value.length==0){
+                $("#subjectList").empty();
+                return;
+            }
+            $.ajax({
+                url: `{{ route('subject_title.search') }}`,
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': csrf,
+                    'content-type': 'application/json'
+                },
+                data: {
+                    search: value
+                },
+                success: function (response) {
+                    console.log(response.data);
+                    let data=response.data;
+                    $("#subjectList").empty();
+
+                    data.forEach(element => {
+                        $("#subjectList").append(`<button  class="list-group-item list-group-item-action">${element.subject_title}</button>`);
+                    });
+                    
+                }
+            });
+        });
+
+        $("div.alert").on("click", function () {
+            $(this).remove();
+        });
+        $("#subjectList").on("click","button",function(){
+            $("#subject_title").val($(this).text());
+            $("#subjectList").empty();
+        });
     });
+
+
 </script>
 @endsection
