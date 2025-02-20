@@ -2,7 +2,7 @@
     <div class="container">
         <!-- Logo -->
         <a class="navbar-brand" href="#">
-            <img src="https://via.placeholder.com/40" alt="Logo" class="me-2"> MyWebsite
+            <img src="https://via.placeholder.com/40" alt="Logo" class="me-2">Student Exam system
         </a>
 
         <!-- Mobile Toggle Button -->
@@ -14,13 +14,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Home</a>
+                    <a class="nav-link active" href="{{ route('exam.index') }}">Upload question band</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
+                    <a class="nav-link" href="#">Set question paper</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
+                    <a class="nav-link" href="{{ route('user.showlog') }}">User log</a>
                 </li>
 
                 <!-- Dropdown Menu -->
@@ -34,10 +34,16 @@
                     </ul>
                 </li>
 
-                <!-- Login Button -->
-                <li class="nav-item">
-                    <a class="btn btn-primary ms-3" href="#">Login</a>
-                </li>
+                @auth
+                    <li class="nav-item">
+                        <a class="btn btn-danger ms-3" href="{{ route('user.logout') }}">Logout</a>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a class="btn btn-primary ms-3" href="{{ route('user.login') }}">Login</a>
+                    </li>
+                @endauth
+                
             </ul>
         </div>
     </div>

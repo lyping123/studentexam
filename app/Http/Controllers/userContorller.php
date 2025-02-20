@@ -47,6 +47,8 @@ class userContorller extends Controller
         return redirect()->route('user.login');
     }
     public function logout(){
-        return view('logout');
+        Auth::logout();
+        
+        return redirect()->route('user.login');
     }
 }

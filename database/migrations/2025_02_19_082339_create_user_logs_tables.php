@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_logs_tables', function (Blueprint $table) {
+        Schema::create('user_logs', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('action'); // Example: "Added Subject"
+            $table->json('data'); // Store old data
             $table->timestamps();
         });
     }
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_logs_tables');
+        Schema::dropIfExists('user_logs');
     }
 };

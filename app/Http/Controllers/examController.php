@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\question;
 use App\Models\subject;
 use App\Models\subject_title;
+use App\Models\userLog;
 use Illuminate\Http\Request;
 
 class examController extends Controller
@@ -21,12 +22,14 @@ class examController extends Controller
 
         ]);
 
+
         $subject_title=subject_title::where('subject_title',$request->subject_title)->first();
         if(!$subject_title){
             $subject_title=subject_title::create([
                 'subject_title'=>$request->subject_title
             ]);
         }
+
         
         if($request->hasFile('jsonFile')){
             $jsonFile = $request->file('jsonFile');
@@ -36,7 +39,9 @@ class examController extends Controller
             if(!$exams){
                 return redirect()->route('exam.index')->withErrors('Invalid Json File');
             }
+            
             $alphakey=range('A','Z');
+            $subjectids=array();
             foreach($exams as $exam){
                 $subject=subject::create([
                     'user_id'=>1,
@@ -45,6 +50,7 @@ class examController extends Controller
                     'subject'=>$request->subject_title,
                 ]);
                 $insertid=$subject->id;
+                $subjectids[]=$insertid;
 
                 foreach($exam["options"] as $index=>$option){
                     $question=new question();
@@ -54,6 +60,17 @@ class examController extends Controller
                     $question->save();
                 }
             }
+
+            userLog::create([
+                'user_id'=>1,
+                'action'=>'Added Subject '.$request->subject_title,
+                'data'=>[
+                    'subject'=>[
+                        'subject_ids'=>$subjectids
+                    ],
+                ]
+
+            ]);
 
             return redirect()->route('exam.index')->with('success','exam question successfully uploaded');
         }
