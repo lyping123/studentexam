@@ -45,18 +45,24 @@
                 
             <div class="d-flex justify-content-between mb-2">
                 <div class="col-md-6">
-                    <form action="{{ route('exam.search') }}" method="get">
+                    <form action="{{ route('exam.index') }}" method="get">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Search by subject title" name="search" value="{{ request()->search }}">
+                            {{-- <input type="text" class="form-control" placeholder="Search by subject title" name="search" value="{{ request()->search }}"> --}}
+                            <select name="search" id="" class="form-control">
+                                <option value="">Choose subject title</option>
+                                @foreach ($subject_titles as $subject_title)
+                                    <option value="{{ $subject_title->id }}">{{ $subject_title->subject_name }}</option>
+                                @endforeach
+                            </select>
                             <button class="btn btn-outline-secondary" type="submit">Search</button>
                         </div>
                     </form>
                 </div>
-                <form method="POST" action="{{ route('exam.delete') }}">
+            <form method="POST" action="{{ route('exam.delete') }}">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
+               
             </div>
             <table class="table table-bordered">
                 <thead>
@@ -79,7 +85,8 @@
                             <td><input type="checkbox" name="checkid[]" value="{{ $subject->id }}" id=""></td>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $subject->sub_title }}</td>
-                            <td>{{ $subject->subject }}</td>
+                            
+                            <td>{{ $subject->subject_title->subject_name }}</td>
                         </tr>
                         <tr id="subtable-{{ $subject->id }}" class="sub-table-row" style="display: none;">
                             <td colspan="4">

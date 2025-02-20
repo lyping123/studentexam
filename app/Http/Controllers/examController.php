@@ -7,13 +7,19 @@ use App\Models\subject;
 use App\Models\subject_title;
 use App\Models\userLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class examController extends Controller
 {
-    public function index(){
-        
-        $subjects=subject::all();
-        return view('index',compact('subjects'));
+    public function index(Request $request)
+    {
+        $subject_titles=subject_title::all();
+        $search=$request->input("search");
+        $subjects=subject::filter($search)->get();
+        // dd($subjects->subject_title);
+        // $subject_title=subject::find(1);
+        // dd($subject_title->subject_title);
+        return view('index',compact('subjects','subject_titles'));
     }
     public function uploadJson(Request $request){
         $request->validate([
@@ -23,12 +29,14 @@ class examController extends Controller
         ]);
 
 
-        $subject_title=subject_title::where('subject_title',$request->subject_title)->first();
+        $subject_title=subject_title::where('subject_name',$request->subject_title)->first();
         if(!$subject_title){
             $subject_title=subject_title::create([
-                'subject_title'=>$request->subject_title
+                'subject_name'=>$request->subject_title
             ]);
+            
         }
+        $subbtitlei_id=$subject_title->id;
 
         
         if($request->hasFile('jsonFile')){
@@ -44,10 +52,10 @@ class examController extends Controller
             $subjectids=array();
             foreach($exams as $exam){
                 $subject=subject::create([
-                    'user_id'=>1,
+                    'user_id'=>Auth::id(),
                     'sub_title'=>$exam['question'],
                     'correct_ans'=>$exam['answer'],
-                    'subject'=>$request->subject_title,
+                    'subject_id'=>$subbtitlei_id,
                 ]);
                 $insertid=$subject->id;
                 $subjectids[]=$insertid;
@@ -62,7 +70,7 @@ class examController extends Controller
             }
 
             userLog::create([
-                'user_id'=>1,
+                'user_id'=>Auth::id(),
                 'action'=>'Added Subject '.$request->subject_title,
                 'data'=>[
                     'subject'=>[
@@ -79,7 +87,7 @@ class examController extends Controller
 
     public function search(Request $request){
         $search=$request->input('search');
-        $subjects=subject::where('subject','like','%'.$search.'%')->get();
+        $subjects=subject::find($search);
         return view('index',compact('subjects'));
     }
 
@@ -88,7 +96,7 @@ class examController extends Controller
     {
 
         $deleterow=$request->input('checkid');
-       
+        
         foreach($deleterow as $deleterowid){
 
             $subject=subject::find($deleterowid);

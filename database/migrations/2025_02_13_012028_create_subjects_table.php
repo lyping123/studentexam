@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId("user_id")->constrained()->onDelete("cascade");
             $table->string("sub_title");
             $table->string("correct_ans");
-            $table->string("subject");
+            $table->foreignId("subject_id")->constrained("subject_titles")->onDelete("cascade");
             $table->timestamps();
         });
     }
