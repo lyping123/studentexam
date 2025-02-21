@@ -14,10 +14,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('exam.index') }}">Upload question band</a>
+                    <a class="nav-link active" href="{{ route('exam.index') }}">Question band</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Set question paper</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Set question paper
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('exam.stuquestiton') }}">Add set question</a></li>
+                        <li><a class="dropdown-item" href="{{ route('exam.viewsetquestion') }}">View set question</a></li>
+                    </ul>
+                   
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('user.showlog') }}">User log</a>
@@ -28,10 +35,7 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                         More
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Blog</a></li>
-                        <li><a class="dropdown-item" href="#">Contact</a></li>
-                    </ul>
+                    
                 </li>
 
                 @auth

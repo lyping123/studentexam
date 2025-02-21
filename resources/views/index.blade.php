@@ -42,7 +42,6 @@
         <div class="col-md-12 mt-4">
             <h2 class="text-center mb-4">Exam subjects</h2>
             
-                
             <div class="d-flex justify-content-between mb-2">
                 <div class="col-md-6">
                     <form action="{{ route('exam.index') }}" method="get">

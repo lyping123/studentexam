@@ -15,14 +15,7 @@ class subject extends Model
     // ✔ addGlobalScope('user', function (Builder $builder) { ... }) → Automatically filters user_id.
     // ✔ Auth::check() → Ensures a user is logged in before applying the filter.
 
-    public static function booted(){
-        // $allSubjects = Subject::withoutGlobalScope('user')->get();
-        static::addGlobalScope('user',function(Builder $builder){
-            if(Auth::check()){
-                $builder->where("user_id",Auth::id());
-            }
-        });
-    }
+    
 
     public function scopeFilter($query,$search)
     {
@@ -37,7 +30,20 @@ class subject extends Model
         return $this->hasMany(question::class);
     }
 
+    public function exam_question(){
+        return $this->hasMany(question::class,"subject_id");
+    }
+
     public function subject_title(){
         return $this->belongsTo(subject_title::class,"subject_id");
+    }
+
+    public static function booted(){
+        // $allSubjects = Subject::withoutGlobalScope('user')->get();
+        static::addGlobalScope('user',function(Builder $builder){
+            if(Auth::check()){
+                $builder->where("user_id",Auth::id());
+            }
+        });
     }
 }
