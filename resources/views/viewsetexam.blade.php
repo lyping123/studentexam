@@ -5,7 +5,6 @@
     <h2 class="text-center mb-4">Set Exam</h2>
 
     <div class="card shadow p-4">
-        <form action="" method="POST">
             @csrf
             <table class="table table-bordered mt-4">
                 <thead class="table-dark">
@@ -15,7 +14,7 @@
                         {{-- <th>Course</th> --}}
                         <th>User created</th>
                         <th>created Date</th>
-                        <th>Action</th>
+                        <th colspan="3">Action</th>
                     </tr>
                 </thead>
                 <tbody id="questionTable">
@@ -25,44 +24,26 @@
                             <td>{{ $question_paper->total_question }}</td>
                             <td>{{ $question_paper->exam_question->first()->user->name }}</td>
                             <td>{{ $question_paper->created_at }}</td>
+                            <td>
+                                <a href="{{ route('demoexam.index', $question_paper->id) }}" class="btn btn-primary btn-sm">Demo question</a>
+                            </td>
+                            <td>
+                                <a href="{{ route('exam.editquestion', $question_paper->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                            </td>
+                            <td>
+                                
+                                <form method="POST" action="{{ route('exam.set.delete', $question_paper->id) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" >Delete</button>
+                                </form>
+                            </td>
+
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-        </form>
     </div>
 </div>
 
-<!-- jQuery for Dynamic Question Addition -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function () {
-    $("#addQuestion").click(function () {
-        $("#questionTable").append(`
-            <tr>
-                <td><input type="text" class="form-control" name="questions[]" required></td>
-                <td><input type="text" class="form-control" name="options[][0]" required></td>
-                <td><input type="text" class="form-control" name="options[][1]" required></td>
-                <td><input type="text" class="form-control" name="options[][2]" required></td>
-                <td><input type="text" class="form-control" name="options[][3]" required></td>
-                <td>
-                    <select class="form-control" name="correct_answers[]">
-                        <option value="0">Option 1</option>
-                        <option value="1">Option 2</option>
-                        <option value="2">Option 3</option>
-                        <option value="3">Option 4</option>
-                    </select>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-danger btn-sm remove-question">✖</button>
-                </td>
-            </tr>
-        `);
-    });
-
-    $(document).on("click", ".remove-question", function () {
-        $(this).closest("tr").remove();
-    });
-});
-</script>
 @endsection

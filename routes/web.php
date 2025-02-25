@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ajaxController;
+use App\Http\Controllers\demoExamController;
 use App\Http\Controllers\examController;
 use App\Http\Controllers\logController;
 use App\Http\Controllers\userContorller;
@@ -26,12 +27,23 @@ Route::middleware(checkauth::class)->group(function(){
     
     Route::get("/setquestion",[examController::class,"setquestionPage"])->name("exam.stuquestiton");
     Route::get("/viewsetquestion",[examController::class,"viewsetquestionPage"])->name("exam.viewsetquestion");
+    Route::get("/setquestion/{question_paper}",[examController::class,"updatequestionPage"])->name("exam.editquestion");
     Route::post("/setquestion",[examController::class,"setquestion"])->name("exam.setquestion");
     Route::put("/updatesetquestion",[examController::class,"updatesetquestion"])->name("exam.update.setquestion");
+    Route::put("/updateeditquestion/{question_paper}",[examController::class,"updatequestion"])->name("exam.update.editquestion");
     Route::delete("/delete/exam/",[examController::class,'deletesetupAll'])->name("exam.setup.deleteAll");
     Route::delete("/delete/{exam_question}/exam/",[examController::class,'deletesetup'])->name("exam.setup.delete");
+    Route::delete("deletesetexam/{question_paper}/exam",[examController::class,'deletesetexam'])->name("exam.set.delete");
+    Route::delete("/delete/updateexam/{question_paper}",[examController::class,"deleteupdateAll"])->name("exam.update.deleteAll");
+    Route::delete("/delete/exam/{exam_question}/{question_paper}",[examController::class,'deleteupdate'])->name("exam.update.delete");
+    
+
+    Route::get("/demoquestion/{question_paper}",[demoExamController::class,"index"])->name("demoexam.index");
+    Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
+
 
     Route::get("/showlog",[logController::class,'showlog'])->name("user.showlog");
     Route::get("/undo/{log_id}",[logController::class,'undo'])->name("undo.action");
+
 
 });

@@ -32,12 +32,54 @@ class examController extends Controller
         $subjects=subject::filter($search)->get();
         return view('setupexam',compact('subjects','subject_titles','question_papers'));
     }
+    public function updatequestionPage(Request $request,question_paper $question_paper)
+    {
+        $subject_titles=subject_title::all();
+        $question_papers=$question_paper->exam_question()->get();
+        $paper=$question_paper;
+        
+        $search=$request->input("search");
+        $subjects=subject::filter($search)->get();
+        return view('setupexam_edit',compact('subjects','subject_titles','question_papers','paper'));
+    }
+
+    public function updatequestion(Request $request,question_paper $question_paper)
+    {
+        $request->validate([
+            "paper_name"=>"required"
+        ]);
+        $exam_question=$question_paper->exam_question();
+        $question_paper->update([
+            "paper_name"=>$request->paper_name,
+            "total_question"=>count($exam_question->get()),
+        ]);
+
+        $exam_question->update([
+            "status"=>true,
+        ]);
+
+        if($exam_question){
+            return redirect()->route("exam.viewsetquestion")->with("success","set question modify success");
+        }
+
+        return redirect()->route("exam.editquestion",$question_paper->id)->withErrors("set question modify fail");
+    }
 
     public function setquestion(Request $request)
     {
+        if($request->input("question_paper_id")){
+            $subjects=$request->input("checkid");
+            foreach($subjects as $subject){
+                $examquestions=new exam_question();
+                $examquestions->paper_id=$request->input("question_paper_id");
+                $examquestions->subject_id=$subject;
+                $examquestions->user_id=Auth::id();
+                $examquestions->status=true;
+                $examquestions->save();
+            }
+            return redirect()->route("exam.editquestion",$request->input("question_paper_id"))->with("success","Question addded success");
+        }   
         $subjects=$request->input("checkid");
-
-        
         foreach($subjects as $subject){
             $examquestions=new exam_question();
             $examquestions->subject_id=$subject;
@@ -45,8 +87,11 @@ class examController extends Controller
             $examquestions->status=false;
             $examquestions->save();
         }
+
         return redirect()->route("exam.stuquestiton")->with("success","Question addded success");
     }
+
+
 
     public function updatesetquestion(Request $request){
         $request->validate([
@@ -66,10 +111,10 @@ class examController extends Controller
             "status"=>true,
         ]);
         if($exam_question){
-            return redirect()->route("exam.stuquestiton")->with("success","set question addded success");
+            return redirect()->route("exam.stuquestiton")->with("success","set question added success");
         }
 
-        return redirect()->route("exam.stuquestiton")->withErrors("set question addded fail");
+        return redirect()->route("exam.stuquestiton")->withErrors("set question added fail");
 
     }
     public function deletesetupAll()
@@ -79,10 +124,26 @@ class examController extends Controller
         return redirect()->route("exam.stuquestiton")->with("success","exam question deleted success");
     }
 
+    public function deleteupdateAll(question_paper $question_paper)
+    {
+        $question_paper->exam_question->delete();
+        return redirect()->route("exam.editquestion",$question_paper->id)->with("success","exam question deleted success");
+    }
     public function deletesetup(exam_question $exam_question)
     {
         $exam_question->delete();
         return redirect()->route("exam.stuquestiton")->with("success","exam question deleted success");
+    }
+
+    public function deleteupdate(exam_question $exam_question,question_paper $question_paper)
+    {
+        $exam_question->delete();
+        return redirect()->route("exam.editquestion",$question_paper->id)->with("success","exam question deleted success");
+    }
+
+    public function deletesetexam(question_paper $question_paper){
+        $question_paper->delete();
+        return redirect()->route("exam.viewsetquestion")->with("success","question paper deleted success");
     }
 
     public function viewsetquestionPage()
@@ -158,8 +219,10 @@ class examController extends Controller
     }
 
     public function search(Request $request){
+        
         $search=$request->input('search');
         $subjects=subject::find($search);
+        
         return view('index',compact('subjects'));
     }
 

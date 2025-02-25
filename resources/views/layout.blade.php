@@ -20,7 +20,15 @@
     <div class="container mt-4">
         <!-- Success message -->
         <x-message />
+
         @yield('content')
     </div>
+    <script>
+        $(document).ready(function () {
+            $("div.alert").on("click", function () {
+             $(this).remove();
+            });
+        });
+    </script>
 </body>
 </html>
