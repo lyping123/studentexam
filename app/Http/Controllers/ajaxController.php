@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\question_paper;
 use App\Models\subject_title;
 use Illuminate\Http\Request;
+use PDO;
 
 class ajaxController extends Controller
 {
@@ -20,5 +22,13 @@ class ajaxController extends Controller
             ]);
         }
         return response()->json([]);
+    }
+
+    public function getQuestionPaperSetting($id){
+        $question_paper=question_paper::find($id);
+        return response()->json([
+            "data"=>$question_paper,
+            "status"=>200
+        ]);
     }
 }

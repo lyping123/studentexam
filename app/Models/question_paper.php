@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class question_paper extends Model
 {
-    protected $fillable=["paper_name","total_question"];
+    protected $fillable=["paper_name","total_question","limit_submit","limit_submit_per_day","time_limit","status"];
     
     public function exam_question(){
         return $this->hasMany(exam_question::class,"paper_id");

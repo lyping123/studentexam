@@ -8,8 +8,7 @@ use App\Http\Controllers\userContorller;
 use App\Http\Middleware\checkauth;
 use App\Models\exam_question;
 use Illuminate\Support\Facades\Route;
-
-
+use Symfony\Component\HttpKernel\DataCollector\AjaxDataCollector;
 
 Route::get("/login",[userContorller::class,'login'])->name("user.login");
 Route::post("/login",[userContorller::class,'authentication'])->name("user.login");
@@ -29,6 +28,8 @@ Route::middleware(checkauth::class)->group(function(){
     Route::get("/viewsetquestion",[examController::class,"viewsetquestionPage"])->name("exam.viewsetquestion");
     Route::get("/setquestion/{question_paper}",[examController::class,"updatequestionPage"])->name("exam.editquestion");
     Route::post("/setquestion",[examController::class,"setquestion"])->name("exam.setquestion");
+    Route::get("/question_paper/setting/{id}",[ajaxController::class,"getQuestionPaperSetting"])->name("exam.setting");
+    Route::post("/question_paper/setting/{id}",[examController::class,"saveQuestionPaperSetting"])->name("exam.setting.save");
     Route::put("/updatesetquestion",[examController::class,"updatesetquestion"])->name("exam.update.setquestion");
     Route::put("/updateeditquestion/{question_paper}",[examController::class,"updatequestion"])->name("exam.update.editquestion");
     Route::delete("/delete/exam/",[examController::class,'deletesetupAll'])->name("exam.setup.deleteAll");
@@ -36,18 +37,15 @@ Route::middleware(checkauth::class)->group(function(){
     Route::delete("deletesetexam/{question_paper}/exam",[examController::class,'deletesetexam'])->name("exam.set.delete");
     Route::delete("/delete/updateexam/{question_paper}",[examController::class,"deleteupdateAll"])->name("exam.update.deleteAll");
     Route::delete("/delete/exam/{exam_question}/{question_paper}",[examController::class,'deleteupdate'])->name("exam.update.delete");
+
     
 
     Route::get("/demoquestion/{question_paper}",[demoExamController::class,"index"])->name("demoexam.index");
     Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
     Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review");
     Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("demoexam.review.list");
-    
-
-
 
     Route::get("/showlog",[logController::class,'showlog'])->name("user.showlog");
     Route::get("/undo/{log_id}",[logController::class,'undo'])->name("undo.action");
-
 
 });

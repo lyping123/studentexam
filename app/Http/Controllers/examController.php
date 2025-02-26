@@ -8,6 +8,7 @@ use App\Models\question_paper;
 use App\Models\subject;
 use App\Models\subject_title;
 use App\Models\userLog;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,6 +33,18 @@ class examController extends Controller
         $subjects=subject::filter($search)->get();
         return view('setupexam',compact('subjects','subject_titles','question_papers'));
     }
+
+    public function saveQuestionPaperSetting(Request $request,$id){
+        $formvalidated=$request->validate([
+            "limit_submit_per_day"=>"required|boolean",
+            "time_limit"=>"required|numeric",
+            "status"=>"required|boolean"
+        ]);
+        $question_paper=question_paper::find($id);
+        $question_paper->update($formvalidated);
+        return redirect()->route("exam.viewsetquestion")->with("success","exam setting updated success");
+       
+    }
     public function updatequestionPage(Request $request,question_paper $question_paper)
     {
         $subject_titles=subject_title::all();
@@ -46,8 +59,9 @@ class examController extends Controller
     public function updatequestion(Request $request,question_paper $question_paper)
     {
         $request->validate([
-            "paper_name"=>"required"
+            "paper_name"=>"required|unique:question_papers,paper_name"
         ]);
+
         $exam_question=$question_paper->exam_question();
         $question_paper->update([
             "paper_name"=>$request->paper_name,
@@ -95,7 +109,7 @@ class examController extends Controller
 
     public function updatesetquestion(Request $request){
         $request->validate([
-            "paper_name"=>"required"
+            "paper_name"=>"required|unique:question_papers,paper_name"
         ]);
 
         $exam_question=exam_question::where("status",false);
@@ -119,7 +133,7 @@ class examController extends Controller
     }
     public function deletesetupAll()
     {
-        $examquestions=exam_question::where("user_id",Auth::id());
+        $examquestions=exam_question::where("user_id",Auth::id())->where("status",false);
         $examquestions->delete();
         return redirect()->route("exam.stuquestiton")->with("success","exam question deleted success");
     }

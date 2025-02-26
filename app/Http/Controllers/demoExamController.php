@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\exam_question;
+use Carbon\Carbon;
 use App\Models\ExamAttempt;
 use Illuminate\Http\Request;
+use App\Models\exam_question;
 use App\Models\StudentAnswer;
 use App\Models\question_paper;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,20 @@ class demoExamController extends Controller
         ]);
 
         
+        $question_paper=question_paper::find($request->paper_id);
+
+        
+        
+        if($question_paper->limit_submit_per_day){
+            $existingAttempt = ExamAttempt::where('student_id', Auth::id())
+            ->where('paper_id', $request->paper_id)
+            ->whereDate('created_at', Carbon::today())
+            ->exists();
+            
+            if ($existingAttempt) {
+                return redirect()->back()->withErrors('You have already submitted this exam today.');
+            }
+        }
         $examAttenpt=ExamAttempt::create([
             "student_id"=>Auth::id(),
             'paper_id'=>$request->paper_id,
@@ -40,6 +55,7 @@ class demoExamController extends Controller
                 'answer' => $answer
             ]);
         }
+
 
         return redirect()->route('demoexam.review', $attenpt_id)->with('success', 'Exam submitted successfully!');
     }
