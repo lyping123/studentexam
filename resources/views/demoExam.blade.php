@@ -17,9 +17,10 @@
                     
                     @foreach ($question->subject->questions as $key => $option)
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="answers[{{ $question->id }}]" 
-                                   value="{{ $option->question_section }}" id="option{{ $question->id }}{{ $option->question_title }}" required>
-                            <label class="form-check-label" for="option{{ $question->id }}{{ $option->question_title }}">
+                            
+                            <input class="form-check-input" type="radio" name="answers[{{ $question->subject->id }}]" 
+                                   value="{{ $option->question_section }}" id="option{{ $question->subject->id }}{{ $option->question_title }}" required>
+                            <label class="form-check-label" for="option{{ $question->subject->id }}{{ $option->question_title }}">
                                 {{ $option->question_title }}
                             </label>
                         </div>

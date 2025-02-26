@@ -31,10 +31,12 @@
                 </li>
 
                 <!-- Dropdown Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <li class="nav-item">
+                    {{-- <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                         More
-                    </a>
+                    </a> --}}
+                    <a class="nav-link  dropdown" href="{{ route('demoexam.review.list') }}">result list</a>
+                    
                     
                 </li>
 

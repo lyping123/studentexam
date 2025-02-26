@@ -40,6 +40,10 @@ Route::middleware(checkauth::class)->group(function(){
 
     Route::get("/demoquestion/{question_paper}",[demoExamController::class,"index"])->name("demoexam.index");
     Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
+    Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review");
+    Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("demoexam.review.list");
+    
+
 
 
     Route::get("/showlog",[logController::class,'showlog'])->name("user.showlog");
