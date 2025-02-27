@@ -4,17 +4,20 @@ use App\Http\Controllers\ajaxController;
 use App\Http\Controllers\demoExamController;
 use App\Http\Controllers\examController;
 use App\Http\Controllers\logController;
+use App\Http\Controllers\studentController;
 use App\Http\Controllers\userContorller;
 use App\Http\Middleware\checkauth;
-use App\Models\exam_question;
+
 use Illuminate\Support\Facades\Route;
-use Symfony\Component\HttpKernel\DataCollector\AjaxDataCollector;
+
 
 Route::get("/login",[userContorller::class,'login'])->name("user.login");
 Route::post("/login",[userContorller::class,'authentication'])->name("user.login");
 Route::get("/register",[userContorller::class,'register'])->name("user.register");
 Route::post("/register",[userContorller::class,'register_user'])->name("user.register");
 Route::get("/logout",[userContorller::class,'logout'])->name("user.logout");
+
+
 
 Route::middleware(checkauth::class)->group(function(){
     Route::get('/',[examController::class,'index'])->name("exam.index");

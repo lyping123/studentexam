@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\course;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,15 +14,18 @@ class courseSeeder extends Seeder
     public function run(): void
     {
         $courses = [
-                "course_name" => "Pragramming",
-                "course_name" => "Networking",
-                "course_name" => "Multimedia",
-                "course_name" => "Electronics",
-                "course_name" => "Accounting",
+                "Pragramming",
+                 "Networking",
+                "Multimedia",
+                "Electronics",
+                 "Accounting"
         ];
 
         foreach ($courses as $course) {
-            \App\Models\Course::create($course);
+            course::create([
+                "course_name" => $course,
+            ]);
         }
+        
     }
 }
