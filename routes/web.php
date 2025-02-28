@@ -13,8 +13,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get("/login",[userContorller::class,'login'])->name("user.login");
 Route::post("/login",[userContorller::class,'authentication'])->name("user.login");
-Route::get("/register",[userContorller::class,'register'])->name("user.register");
-Route::post("/register",[userContorller::class,'register_user'])->name("user.register");
+Route::get("/studentlogin",[userContorller::class,'studentLoginPage'])->name("student.login");
+Route::post("/studentlogin",[userContorller::class,'studentLogin'])->name("student.login");
+Route::get("/register",[userContorller::class,'register'])->name("admin.register");
+Route::post("/register",[userContorller::class,'register_user'])->name("admin.register");
+Route::get("/studentregister",[userContorller::class,'studentRegisterPage'])->name("student.register");
+Route::post("/studentregister",[userContorller::class,'studentRegister'])->name("student.register");
 Route::get("/logout",[userContorller::class,'logout'])->name("user.logout");
 
 

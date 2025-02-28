@@ -31,19 +31,25 @@
                             <td>{{ $question_paper->status==1 ? "Active":"Inactive" }}</td>
                             <td>{{ $question_paper->exam_question->first()->user->name }}</td>
                             <td>{{ $question_paper->created_at->format("d-m-Y") }}</td>
-                            <td>
-                                <a href="{{ route('demoexam.index', $question_paper->id) }}" class="btn btn-primary btn-sm">Demo question</a>
-                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" value="{{ $question_paper->id }}"  data-target="#editModal">Setting</button>
+                            <td style="display: flex;">
+                                <a href="{{ route('demoexam.index', $question_paper->id) }} " target='_blank' class="btn btn-secondary btn-sm"><i class="fa fa-share-square-o" aria-hidden="true"></i>
+                                </a>
+                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" value="{{ $question_paper->id }}"  data-target="#editModal"><i class="fa fa-cog" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm sharelink" value="{{ $question_paper->id }}"><i class="fa fa-clone" aria-hidden="true"></i></button>
                             </td>
                             <td>
-                                <a href="{{ route('exam.editquestion', $question_paper->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{{ route('exam.editquestion', $question_paper->id) }}" class="btn btn-warning btn-sm">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                </a>
                             </td>
                             <td>
                                 
                                 <form method="POST" action="{{ route('exam.set.delete', $question_paper->id) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" >Delete</button>
+                                    <button type="submit" class="btn btn-danger btn-sm" ><i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    </button>
                                 </form>
                             </td>
 
@@ -120,6 +126,13 @@
                 }
                 $("#editModal").modal("show");
             });
+        });
+        $('#questionTable').on("click",".sharelink",function() {
+            var id = $(this).val();
+            var link=`{{ route('demoexam.index',':paper_id') }}`.replace(':paper_id',id);
+            alert("link have been copied to clipboard");
+            navigator.clipboard.writeText(link);
+            
         });
     });
     
