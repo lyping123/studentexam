@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <h2 class="text-center">Student Exam</h2>
 
-    <form action="{{ route('demoexam.submit') }}" method="POST">
+    <form action="{{ route('demoexam.submit')}}" method="POST">
         @csrf
         <input type="hidden" name="paper_id" value="{{ $question_paper->id }}">
 

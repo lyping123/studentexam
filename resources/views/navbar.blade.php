@@ -13,6 +13,9 @@
         <!-- Navbar Links -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                @if (auth()->user()->role == 'admin')
+                    
+               
                 <li class="nav-item">
                     <a class="nav-link active" href="{{ route('exam.index') }}">Question band</a>
                 </li>
@@ -26,9 +29,11 @@
                     </ul>
                    
                 </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('user.showlog') }}">User log</a>
                 </li>
+                @endif
 
                 <!-- Dropdown Menu -->
                 <li class="nav-item">

@@ -9,10 +9,15 @@ use App\Models\exam_question;
 use App\Models\StudentAnswer;
 use App\Models\question_paper;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class demoExamController extends Controller
 {
-    public function index(question_paper $question_paper){
+    public function index($question_paper){
+        // dd($question_paper);
+        $decryptedId = Crypt::decrypt($question_paper);
+        $question_paper=question_paper::find($decryptedId);
+        
         $exam_questions = $question_paper->exam_question()->get();
         return view('demoExam',compact("exam_questions","question_paper"));
     }
@@ -27,8 +32,6 @@ class demoExamController extends Controller
         
         $question_paper=question_paper::find($request->paper_id);
 
-        
-        
         if($question_paper->limit_submit_per_day){
             $existingAttempt = ExamAttempt::where('student_id', Auth::id())
             ->where('paper_id', $request->paper_id)
@@ -62,6 +65,7 @@ class demoExamController extends Controller
 
     public function examReview(ExamAttempt $ExamAttempt)
     {
+        
         $attenpt_id=$ExamAttempt->id;
         $exam_questions=$ExamAttempt->question_paper->exam_question()->get();
         $question_paper=$ExamAttempt->question_paper();

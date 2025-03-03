@@ -36,7 +36,7 @@
                                 </a>
                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" value="{{ $question_paper->id }}"  data-target="#editModal"><i class="fa fa-cog" aria-hidden="true"></i>
                                 </button>
-                                <button type="button" class="btn btn-primary btn-sm sharelink" value="{{ $question_paper->id }}"><i class="fa fa-clone" aria-hidden="true"></i></button>
+                                <button type="button" class="btn btn-primary btn-sm sharelink" value="{{ encrypt($question_paper->id) }}"><i class="fa fa-clone" aria-hidden="true"></i></button>
                             </td>
                             <td>
                                 <a href="{{ route('exam.editquestion', $question_paper->id) }}" class="btn btn-warning btn-sm">
@@ -129,7 +129,8 @@
         });
         $('#questionTable').on("click",".sharelink",function() {
             var id = $(this).val();
-            var link=`{{ route('demoexam.index',':paper_id') }}`.replace(':paper_id',id);
+
+            var link=`{{ route('student.demoexam.index',':paper_id') }}`.replace(':paper_id',id);
             alert("link have been copied to clipboard");
             navigator.clipboard.writeText(link);
             

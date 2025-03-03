@@ -10,9 +10,9 @@
                 <form action="{{ route('user.login') }}" method="post">
                     @csrf
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}">
-                        @error('email')
+                        <label for="autherticate" class="form-label">Email/IC</label>
+                        <input type="text" name="autherticate" id="autherticate" class="form-control" value="{{ old('autherticate') }}">
+                        @error('autherticate')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
@@ -22,6 +22,10 @@
                         @error('password')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                        <label class="form-check-label" for="remember">Remember me</label>
                     </div>
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>

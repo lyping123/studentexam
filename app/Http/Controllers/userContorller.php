@@ -16,13 +16,27 @@ class userContorller extends Controller
     
     public function authentication(Request $request){
         $request->validate([
-            'email' => 'required|email',
+            'autherticate' => 'required',
             'password' => 'required'
         ]);
-        $credentials = $request->only('email', 'password');
+        $loginField=filter_var($request->autherticate, FILTER_VALIDATE_EMAIL) ? 'email' : 'ic';
+
+
+        $credentials = [
+            $loginField => $request->autherticate,
+            'password' => $request->password
+        ];
+
+        
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('exam.index');
+            if(Auth::user()->role == 'admin'){
+                return redirect()->intended(route('exam.index'));
+            }
+            return redirect()->intended(route('demoexam.review.list'));
+            
+            // return redirect()->intended('/');
         }
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
@@ -31,7 +45,7 @@ class userContorller extends Controller
     }
 
     public function register(){
-        return view('register');
+        return view('adminRegister');
     }
 
     public function register_user(Request $request){
@@ -48,13 +62,9 @@ class userContorller extends Controller
         return redirect()->route('user.login');
     }
     public function logout(){
-        if(Auth::user()->role == 'admin'){
-            Auth::logout();
-            return redirect()->route('user.login');
-        }else{
-            Auth::logout();
-            return redirect()->route('student.login');
-        }   
+        Auth::logout();
+        return redirect()->route('user.login');
+         
     }
     public function studentLoginPage()
     {
@@ -97,6 +107,6 @@ class userContorller extends Controller
         $user->course_id = $request->course;
         $user->save();
 
-        return redirect()->route('student.login');
+        return redirect()->route('user.login');
     }
 }

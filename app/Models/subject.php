@@ -42,7 +42,10 @@ class subject extends Model
         // $allSubjects = Subject::withoutGlobalScope('user')->get();
         static::addGlobalScope('user',function(Builder $builder){
             if(Auth::check()){
-                $builder->where("user_id",Auth::id());
+                if(Auth::user()->role == 'admin'){
+                    $builder->where("user_id",Auth::id());  
+                }
+                return ;
             }
         });
     }
