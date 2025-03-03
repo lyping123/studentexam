@@ -1,9 +1,17 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <!-- Logo -->
-        <a class="navbar-brand" href="#">
-            <img src="https://via.placeholder.com/40" alt="Logo" class="me-2">Student Exam system
-        </a>
+        @if (auth()->user()->role == 'admin')
+            <a class="navbar-brand" href="{{ route('admin.dashboard') }}">
+                <img src="https://via.placeholder.com/40" alt="Logo" class="me-2">Student Exam system
+            </a>
+            
+        @else
+            <a class="navbar-brand" href="{{ route('student.dashboard') }}">
+                <img src="https://via.placeholder.com/40" alt="Logo" class="me-2">Student Exam system
+            </a>
+        @endif
+        
 
         <!-- Mobile Toggle Button -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -15,7 +23,6 @@
             <ul class="navbar-nav ms-auto">
                 @if (auth()->user()->role == 'admin')
                     
-               
                 <li class="nav-item">
                     <a class="nav-link active" href="{{ route('exam.index') }}">Question band</a>
                 </li>
@@ -33,18 +40,16 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('user.showlog') }}">User log</a>
                 </li>
-                @endif
-
-                <!-- Dropdown Menu -->
                 <li class="nav-item">
                     {{-- <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                         More
                     </a> --}}
                     <a class="nav-link  dropdown" href="{{ route('demoexam.review.list') }}">result list</a>
                     
-                    
                 </li>
 
+                @endif
+                
                 @auth
                     <li class="nav-item">
                         <a class="btn btn-danger ms-3" href="{{ route('user.logout') }}">Logout</a>

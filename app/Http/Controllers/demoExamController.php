@@ -59,7 +59,7 @@ class demoExamController extends Controller
             ]);
         }
 
-
+        
         return redirect()->route('demoexam.review', $attenpt_id)->with('success', 'Exam submitted successfully!');
     }
 
@@ -67,8 +67,10 @@ class demoExamController extends Controller
     {
         
         $attenpt_id=$ExamAttempt->id;
+
         $exam_questions=$ExamAttempt->question_paper->exam_question()->get();
         $question_paper=$ExamAttempt->question_paper();
+        
         $studentAnswers=StudentAnswer::where("attempt_id",$attenpt_id)->pluck('answer',"subject_id");
        
         return view("examReview",compact("studentAnswers","question_paper","exam_questions"));

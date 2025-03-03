@@ -27,14 +27,20 @@ class userContorller extends Controller
             'password' => $request->password
         ];
 
-        
+        $userexits=User::where('email',$request->autherticate)->orWhere('ic',$request->autherticate)->first();
+        if(!$userexits){
+            return back()->withErrors([
+                'email' => 'The email or ic is not registered.',
+            ]);
+
+        }
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             if(Auth::user()->role == 'admin'){
                 return redirect()->intended(route('exam.index'));
             }
-            return redirect()->intended(route('demoexam.review.list'));
+            return redirect()->intended(route('student.dashboard'));
             
             // return redirect()->intended('/');
         }

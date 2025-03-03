@@ -18,7 +18,7 @@ class ExamAttempt extends Model
         }
         return $query;
     }
-    
+
     public function question_paper(){
         return $this->belongsTo(question_paper::class,"paper_id");
     }
@@ -28,4 +28,5 @@ class ExamAttempt extends Model
     public function student_answer(){
         return $this->hasMany(StudentAnswer::class,"attempt_id");
     }
+
 }

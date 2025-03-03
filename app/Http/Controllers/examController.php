@@ -2,18 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\exam_question;
-use App\Models\question;
-use App\Models\question_paper;
+use App\Models\User;
 use App\Models\subject;
-use App\Models\subject_title;
 use App\Models\userLog;
-use Illuminate\Cache\RateLimiting\Limit;
+use App\Models\question;
+use App\Models\ExamAttempt;
 use Illuminate\Http\Request;
+use App\Models\exam_question;
+use App\Models\StudentAnswer;
+use App\Models\subject_title;
+use App\Models\question_paper;
 use Illuminate\Support\Facades\Auth;
 
 class examController extends Controller
 {
+
+    public function dashboard()
+    {
+        $recentStudents = User::where('role', 'student')->latest()->take(5)->get();
+        $total_student=User::where('role','student')->count();
+        $totalPapers=question_paper::count();
+        $examAttenpts=ExamAttempt::where('created_at', '>=', now()->subDay())->get();
+        
+        foreach ($examAttenpts as $attempt) {
+            $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
+                ->whereHas('subject', function ($query) {
+                    $query->whereColumn('student_answers.answer', 'subjects.correct_ans');
+                })
+                ->count();
+            $attempt->correct_answers = $correctCount ? $correctCount : 0;
+            $attempt->total_mark=round(($attempt->correct_answers/max(1,$attempt->student_answer->count()))*100,2);
+        }
+       
+        $passed=$examAttenpts->where('total_mark','>=',60)->count();
+        $failed=$examAttenpts->where('total_mark','<',60)->count();
+
+
+
+        return view('admin_dashboard',compact("recentStudents","total_student","totalPapers","passed","failed"));
+    }
     public function index(Request $request)
     {
         $subject_titles=subject_title::all();

@@ -39,6 +39,11 @@
                 </tr>
             </thead>
             <tbody id="questionTable">
+                @if(count($examAttenpts) == 0)
+                    <tr>
+                        <td colspan="6" class="text-center">No data found</td>
+                    </tr>
+                @endif
                 @foreach ($examAttenpts as $examAttenpt)
                     <tr>
                         <td>{{ $examAttenpt->user->name }}</td>
@@ -49,7 +54,6 @@
                         <td>
                             <a href="{{ route('demoexam.review', $examAttenpt->id) }}" class="btn btn-primary btn-sm">View</a>
                         </td>
-
                     </tr>
                 @endforeach
             </tbody>

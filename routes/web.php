@@ -22,6 +22,7 @@ Route::get("/logout",[userContorller::class,'logout'])->name("user.logout");
 
 
 Route::middleware(['role:admin'])->group(function(){
+        Route::get('/dashboard',[examController::class,'dashboard'])->name('admin.dashboard');
         Route::get('/',[examController::class,'index'])->name("exam.index");
         Route::get("search",[examController::class,'search'])->name("exam.search");
         Route::post("/uploadJson",[examController::class,'uploadJson'])->name("exam.uploadJson");
@@ -53,10 +54,11 @@ Route::middleware(['role:admin'])->group(function(){
 
 Route::middleware(['role:student'])->group(function () {
     Route::prefix("student")->group(function(){
+        Route::get("/dashboard",[studentController::class,'index'])->name("student.dashboard");
         Route::get("/demoquestion/{question_paper}",[demoExamController::class,"index"])->name("student.demoexam.index");
         Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
         Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review");
-        Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("demoexam.review.list");
+        Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("student.demoexam.review.list");
     });
     
 });
