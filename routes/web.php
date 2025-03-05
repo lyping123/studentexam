@@ -8,6 +8,7 @@ use App\Http\Controllers\studentController;
 use App\Http\Controllers\userContorller;
 use App\Http\Middleware\checkauth;
 use App\Http\Middleware\RoleMiddleware;
+use App\Models\exam_question;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,6 +23,10 @@ Route::get("/logout",[userContorller::class,'logout'])->name("user.logout");
 
 
 Route::middleware(['role:admin'])->group(function(){
+        Route::get("/studentList",[studentController::class,"studentListPage"])->name("student.list");
+        Route::post("/student/submit",[studentController::class,"student_register"])->name("student.submit");
+        Route::delete("/student/delete/{id}",[studentController::class,"destroy"])->name("student.delete");
+
         Route::get('/dashboard',[examController::class,'dashboard'])->name('admin.dashboard');
         Route::get('/',[examController::class,'index'])->name("exam.index");
         Route::get("search",[examController::class,'search'])->name("exam.search");

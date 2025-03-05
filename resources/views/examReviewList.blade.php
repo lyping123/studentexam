@@ -25,6 +25,7 @@
                     <button type="submit" class="btn btn-primary mt-4">Search</button>
                 </div>
             </div>
+        </div>
         </form>
         <table class="table table-bordered mt-4">
             <thead class="table-dark">

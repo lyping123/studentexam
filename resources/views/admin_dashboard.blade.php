@@ -10,7 +10,7 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Total Students</h5>
-                    <p class="fs-4">{{ $total_student }}</p>
+                    <a href="{{ route('student.list') }}" class="fs-4">{{ $total_student }}</a>
                 </div>
             </div>
         </div>
@@ -56,6 +56,5 @@
             </div>
         </div>
     </div>
-
 </div>
 @endsection

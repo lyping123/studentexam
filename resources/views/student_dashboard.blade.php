@@ -2,15 +2,13 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="text-center">Welcome, {{ auth()->user()->name }}</h2>
-    
     <div class="row">
         <!-- Profile Card -->
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h5 class="card-title">Profile</h5>
-                    <p><strong>Ic:</strong> {{ auth()->user()->ic }}</p>
+                    <p><strong>Name:</strong> {{ auth()->user()->Name }}</p>
                     <p><strong>Role:</strong> Student</p>
                 </div>
             </div>

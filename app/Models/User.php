@@ -52,4 +52,8 @@ class User extends Authenticatable
     public function exam_question(){
         return $this->hasMany(exam_question::class,"user_id");
     }
+
+    public function student(){
+        return $this->hasOne(student::class,"user_id");
+    }
 }

@@ -19,7 +19,7 @@ class userContorller extends Controller
             'autherticate' => 'required',
             'password' => 'required'
         ]);
-        $loginField=filter_var($request->autherticate, FILTER_VALIDATE_EMAIL) ? 'email' : 'ic';
+        $loginField=filter_var($request->autherticate, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
 
 
         $credentials = [
@@ -27,18 +27,20 @@ class userContorller extends Controller
             'password' => $request->password
         ];
 
-        $userexits=User::where('email',$request->autherticate)->orWhere('ic',$request->autherticate)->first();
+        $userexits=User::where('email',$request->autherticate)->orWhere('name',$request->autherticate)->first();
         if(!$userexits){
             return back()->withErrors([
                 'email' => 'The email or ic is not registered.',
             ]);
 
         }
-
-        if (Auth::attempt($credentials)) {
+        
+        if ($userexits->password==$request->password) {
+            Auth::login($userexits);
             $request->session()->regenerate();
             if(Auth::user()->role == 'admin'){
-                return redirect()->intended(route('exam.index'));
+                
+                return redirect()->intended(route('admin.dashboard'));
             }
             return redirect()->intended(route('student.dashboard'));
             
@@ -91,10 +93,7 @@ class userContorller extends Controller
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
-    public function studentRegisterPage(Request $request){
-        $courses=course::all();
-        return view('studentRegister',compact('courses'));
-    }
+    
 
     public function studentRegister(Request $request){
         $request->validate([

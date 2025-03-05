@@ -45,7 +45,7 @@ class examController extends Controller
     {
         $subject_titles=subject_title::all();
         $search=$request->input("search");
-        $subjects=subject::filter($search)->get();
+        $subjects=subject::filter($search)->with('users')->get();
         // dd($subjects->subject_title);
         // $subject_title=subject::find(1);
         // dd($subject_title->subject_title);

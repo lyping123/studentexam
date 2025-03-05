@@ -38,20 +38,75 @@ class studentController extends Controller
     public function store(Request $request)
     {
         
-        $user=User::create([
-            "name" => $request->name,
-            "ic" => $request->ic,
-            "password" => $request->password,
-            "role"=>"student",
-            "course_id" => $request->course_id,
-        ]);
+        // $role=$request->role=="STAFF"?"admin":"student";
+        // return $role;
+        // return $request->all();
+
+        // $user=User::create([
+        //     "name" => $request->name,
+        //     "password" => $request->password,
+        //     "role"=>$role,
+        // ]);
+        
+        
+        $students=$request->studentNames;
+        
+        $group=User::where("name",$request->groups)->first();
+
+        
+        foreach($students as $student){
+            $id=User::where("name",$student)->first()->id;
+            
+            student::create([
+                "user_id" => $group->id,
+                "student_id" => $id,
+            ]);
+        }
+
         // return response()->json($user, 201);
         // $student=student::create([
         //     "user_id" => $user->id,
         //     "course_id" => $request->course_id,
         //     "gender"=>$request->gender,
         // ]);
-        return response()->json($user, 201);
+        return response()->json($group, 201);
+
+    }
+
+    public function studentListPage(Request $request)
+    {
+        $search=$request->input("name");
+        $groupstudent=student::filter($search)->get();
+        
+        foreach($groupstudent as $group){
+            $students=User::find($group->student_id);
+            $group->user=$students;
+        }
+        
+        // dd($groupstudent);
+        // $students=User::where("role","student")->get();        
+        $groupName=User::where("role","admin")->get();
+
+
+        return view("studentList",compact("groupstudent","groupName"));
+    }
+
+    public function student_register(Request $request)
+    {
+        $formValidated=$request->validate([
+            "name"=>"required|unique:users,name",
+            "password"=>"required|confirmed"
+        ]);
+        
+        $user=User::create($formValidated);
+        $studentGroup=student::create([
+            "user_id"=>$request->user,
+            "student_id"=>$user->id
+        ]);
+        if($studentGroup){
+            return redirect()->route("student.list")->with("success","Student register success");
+        }
+        return redirect()->route("student.list")->withErrors("Register fail please check the data propery");
 
     }
 
@@ -76,6 +131,8 @@ class studentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user=User::find($id);
+        $user->delete();
+        return redirect()->route("student.list")->with("success","Student deleted successfully");
     }
 }

@@ -7,41 +7,37 @@ mydb = mysql.connector.connect(
   host="sv94.ifastnet.com",
   user="synergyc",
   password="synergy@central",
-  database="synergyc_student_registration1"
+  database="synergyc_attendance"
 )
 cursor = mydb.cursor()
 
 # Get the data from the daatabase
-cursor.execute("SELECT * FROM student WHERE s_status = 'ACTIVE'")
+
+cursor.execute("SELECT pp_name FROM tb_student where pp_name!='' group by pp_name")
 result = cursor.fetchall()
 
-for row in result:
-    #request to the API
+
+for groupname in result:
     url = "http://127.0.0.1:8000/api/students/"
     headers = {
         "Content-Type": "application/json"
     }
+    cursor.execute(f"SELECT name FROM tb_student where name='{groupname[0]}'")
+    group_name=cursor.fetchone()
     
-    if(row[39] =="Programming"):
-        course_id = 1
-    elif(row[39]=="Networking"):
-        course_id = 2
-    elif(row[39]=="Multimedia"):
-        course_id = 3
-    elif(row[39]=="Electronics"):
-        course_id = 4
-    else:
-        course_id = 5
-    
+    cursor.execute(f"SELECT name FROM tb_student where pp_name='{groupname[0]}'")
+    students=cursor.fetchall()
+    studentList=[]
+    for student in students:
+        studentList.append(student[0])
     
     payload = {
-        "name": row[2],
-        "email": row[3],
-        "password": "synergyexam",
-        "course_id": course_id,
-        "ic": row[4],
-        "gender": row[21],
+        "studentNames":studentList,
+        "groups":group_name
     }
+    
+   
+    
     response = requests.post(url, headers=headers, data=json.dumps(payload))    
     
     print(response.text)
