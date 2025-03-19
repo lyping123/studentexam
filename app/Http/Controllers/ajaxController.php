@@ -12,7 +12,7 @@ class ajaxController extends Controller
     public function getSubject(Request $request){
         
         $subject_title=$request->get('search');
-        $subject_title=subject_title::where('subject_title',"like","%$subject_title%")->get();
+        $subject_title=subject_title::where('subject_name',"like","%$subject_title%")->get();
         
         if($subject_title){
             

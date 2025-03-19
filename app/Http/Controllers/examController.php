@@ -17,6 +17,95 @@ use Illuminate\Support\Facades\Auth;
 class examController extends Controller
 {
 
+    public function addquestionPage()
+    {
+        $subject_titles=subject_title::all();
+        return view("addquestionband",compact("subject_titles"));    
+    }
+
+    public function addquestionSubmit(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            "subject_title"=>"required",
+            "sub_title"=>"required|unique:subjects,sub_title",
+            "options"=>"required",
+            "correct_ans"=>"required"
+        ]);
+        $subject_title=subject_title::where('subject_name',$request->subject_title)->first();
+        if(!$subject_title){
+            $subject_title=subject_title::create([
+                'subject_name'=>$request->subject_title
+            ]);
+            
+        }
+        $subbtitlei_id=$subject_title->id;
+        
+        $subject=subject::create([
+            "user_id"=>Auth::id(),
+            "sub_title"=>$request->sub_title,
+            "correct_ans"=>$request->correct_ans,
+            "subject_id"=>$subbtitlei_id
+        ]);
+        if($subject){
+            // dd($request->options);
+            $options=$request->options;
+            
+            $array=array("A","B","C","D");
+            foreach($options as $index=>$option){
+                question::create([
+                    "question_section"=>$array[$index],
+                    "question_title"=>$option,
+                    "subject_id"=>$subject->id,
+                ]);
+            }
+            return back()->with("success","Question band added success");
+        }
+        return back()->withErrors("Question bank added fail please try again");
+        
+    }
+    public function editquestionPage($id)
+    {
+        $subject_titles=subject_title::all();
+        $subject=subject::find($id);
+        return view("editquestionband",compact("subject","subject_titles"));
+    }
+
+    public function editquestionband(Request $request,subject $subject)
+    {
+        $request->validate([
+            "subject_title"=>"required",
+            "sub_title"=>"required|unique:subjects,sub_title,".$subject->id,
+            "options"=>"required",
+            "correct_ans"=>"required"
+        ]);
+        $subject_title=subject_title::where('subject_name',$request->subject_title)->first();
+        if(!$subject_title){
+            $subject_title=subject_title::create([
+                'subject_name'=>$request->subject_title
+            ]);
+            
+        }
+        $subbtitlei_id=$subject_title->id;
+        $subject->update([
+            "sub_title"=>$request->sub_title,
+            "correct_ans"=>$request->correct_ans,
+            "subject_id"=>$subbtitlei_id,
+        ]);
+        $subject->questions()->delete();
+        $options=$request->options;
+        $array=array("A","B","C","D");
+        foreach($options as $index=>$option){
+            question::create([
+                "question_section"=>$array[$index],
+                "question_title"=>$option,
+                "subject_id"=>$subject->id,
+            ]);
+        }
+        return redirect()->route("exam.index")->with("success","question paper edited success");
+
+
+    }
     public function dashboard()
     {
         $recentStudents = User::where('role', 'student')->latest()->take(5)->get();
@@ -45,7 +134,7 @@ class examController extends Controller
     {
         $subject_titles=subject_title::all();
         $search=$request->input("search");
-        $subjects=subject::filter($search)->with('users')->get();
+        $subjects=subject::filter($search)->latest()->get();
         // dd($subjects->subject_title);
         // $subject_title=subject::find(1);
         // dd($subject_title->subject_title);

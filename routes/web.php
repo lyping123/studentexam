@@ -34,6 +34,10 @@ Route::middleware(['role:admin'])->group(function(){
         Route::get("/subject_title",[ajaxController::class,'getSubject'])->name("subject_title.search");
         Route::delete("/delete",[examController::class,'delete'])->name("exam.delete");
         
+        Route::get("/addquestionPage",[examController::class,"addquestionPage"])->name("exam.addquestion");
+        Route::post("/addquestion/submit",[examController::class,"addquestionSubmit"])->name("exam.addquestion.submit");
+        Route::get("/editquestionPage/{id}",[examController::class,"editquestionPage"])->name("exam.editquestionband");
+        Route::put("/editquestion/{subject}/edit",[examController::class,"editquestionband"])->name("exam.editquestion.edit");
         Route::get("/setquestion",[examController::class,"setquestionPage"])->name("exam.stuquestiton");
         Route::get("/viewsetquestion",[examController::class,"viewsetquestionPage"])->name("exam.viewsetquestion");
         Route::get("/setquestion/{question_paper}",[examController::class,"updatequestionPage"])->name("exam.editquestion");

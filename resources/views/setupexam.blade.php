@@ -35,7 +35,7 @@
                         @csrf
                         <div class="d-flex justify-content-between">
                             <input type="checkbox" id="checkall" class="form-check-input me-1" >
-                            <button type="submit" class="btn btn-success">add to </button>
+                            <button type="submit" class="btn btn-success">Import</button>
                         </div>
                         <ul class="list-group mt-2 scrollable-list">
                             @if (count($subjects)!=0)

@@ -33,7 +33,43 @@
             $("div.alert").on("click", function () {
              $(this).remove();
             });
-        });
+            $("#subject_title").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            var csrf=$('meta[name="csrf-token"]').attr('content');
+            
+
+            if(value.length==0){
+                $("#subjectList").empty();
+                return;
+            }
+            $.ajax({
+                url: `{{ route('subject_title.search') }}`,
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': csrf,
+                    'content-type': 'application/json'
+                },
+                data: {
+                    search: value
+                },
+                success: function (response) {
+                    console.log(response.data);
+                    let data=response.data;
+                    $("#subjectList").empty();
+
+                    data.forEach(element => {
+                        $("#subjectList").append(`<button type='button'  class="list-group-item list-group-item-action">${element.subject_name}</button>`);
+                    });
+                    
+                }
+            });
+            });
+            $("#subjectList").on("click","button",function(){
+                $("#subject_title").val($(this).text());
+                $("#subjectList").empty();
+            });
+            });
+        
     </script>
 </body>
 </html>

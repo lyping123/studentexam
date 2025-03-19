@@ -22,9 +22,12 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 @if (auth()->user()->role == 'admin')
-                    
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('exam.index') }}">Question band</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Question band</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('exam.addquestion') }}">Add question band</a></li>
+                        <li><a class="dropdown-item" href="{{ route('exam.index') }}">question band list</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">

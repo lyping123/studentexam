@@ -70,6 +70,7 @@
                         <th>No</th>
                         <th>Subject question</th>
                         <th>Subject title</th>
+                        <th>action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,8 +85,10 @@
                             <td><input type="checkbox" name="checkid[]" value="{{ $subject->id }}" id=""></td>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $subject->sub_title }}</td>
-                            
                             <td>{{ $subject->subject_title->subject_name }}</td>
+                            <td>
+                                <a href="{{ route('exam.editquestionband',$subject->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
+                            </td>
                         </tr>
                         <tr id="subtable-{{ $subject->id }}" class="sub-table-row" style="display: none;">
                             <td colspan="4">
@@ -136,45 +139,12 @@
             $("#" + target).toggle();
         });
 
-        $("#subject_title").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            var csrf=$('meta[name="csrf-token"]').attr('content');
-            
-
-            if(value.length==0){
-                $("#subjectList").empty();
-                return;
-            }
-            $.ajax({
-                url: `{{ route('subject_title.search') }}`,
-                type: "GET",
-                headers: {
-                    'X-CSRF-TOKEN': csrf,
-                    'content-type': 'application/json'
-                },
-                data: {
-                    search: value
-                },
-                success: function (response) {
-                    console.log(response.data);
-                    let data=response.data;
-                    $("#subjectList").empty();
-
-                    data.forEach(element => {
-                        $("#subjectList").append(`<button  class="list-group-item list-group-item-action">${element.subject_title}</button>`);
-                    });
-                    
-                }
-            });
-        });
+        
 
         $("div.alert").on("click", function () {
             $(this).remove();
         });
-        $("#subjectList").on("click","button",function(){
-            $("#subject_title").val($(this).text());
-            $("#subjectList").empty();
-        });
+       
     });
 
 
