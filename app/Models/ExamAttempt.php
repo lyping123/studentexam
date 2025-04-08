@@ -8,13 +8,32 @@ class ExamAttempt extends Model
 {
     protected $fillable=["student_id","paper_id"];
 
-    public function scopeFilter($query,$search)
+    public function scopeFilter($query,array $search)
     {
+        
         if(!empty($search)){
+            
             // $query->whereHas("question_paper",function($q) use($search){
+                
             //     $q->where("paper_name","like","%$search%");
             // });
-            $query->where("paper_id",$search);
+            if(request()->has("question_paper")){
+                $query->whereHas("question_paper",function($q) use($search){
+                    $q->where("paper_name","like","%$search[question_paper]%");
+                });
+            }
+            if(request()->has("student")){
+                $query->whereHas("user",function($q) use($search){
+                    $q->where("name","like","%$search[student]%");
+                });
+            }
+            if(request()->has("month")){
+                $query->whereMonth("created_at","$search[month]");
+            }
+            
+            // $query->orWhereHas("student",function($q) use($search){
+            //     $q->where("name","like","%$search%");
+            // });
         }
         return $query;
     }

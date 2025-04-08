@@ -79,8 +79,8 @@ class demoExamController extends Controller
     public function examReviewlist()
     {
         $question_papers=question_paper::all();
-        $examAttenpts=ExamAttempt::filter(request('question_paper'))->get();
-        
+        $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))->get();
+
         foreach ($examAttenpts as $attempt) {
             $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
                 ->whereHas('subject', function ($query) {
@@ -92,6 +92,22 @@ class demoExamController extends Controller
         
         // dd();
         return view("examReviewList",compact("examAttenpts","question_papers"));
+    }
+    public function demoexamShareCalendar()
+    {
+        $question_papers=question_paper::all();
+        $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))->get();
+
+        foreach ($examAttenpts as $attempt) {
+            $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
+                ->whereHas('subject', function ($query) {
+                    $query->whereColumn('student_answers.answer', 'subjects.correct_ans');
+                })
+                ->count();
+            $attempt->correct_answers = $correctCount ? $correctCount : 0;
+        }
+        
+        return view("examShareCalendar",compact("examAttenpts","question_papers"));
     }
 }
 

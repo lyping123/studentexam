@@ -52,11 +52,13 @@ Route::middleware(['role:admin'])->group(function(){
         Route::delete("deletesetexam/{question_paper}/exam",[examController::class,'deletesetexam'])->name("exam.set.delete");
         Route::delete("/delete/updateexam/{question_paper}",[examController::class,"deleteupdateAll"])->name("exam.update.deleteAll");
         Route::delete("/delete/exam/{exam_question}/{question_paper}",[examController::class,'deleteupdate'])->name("exam.update.delete");
+        
 
         Route::get("/demoquestion/{question_paper}",[demoExamController::class,"index"])->name("demoexam.index");
         Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
         Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review");
         Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("demoexam.review.list");
+        Route::get("/demoexam.share.calendar",[demoExamController::class,'demoexamShareCalendar'])->name("exam.share.calendar");
 
         Route::post('/download-docx/{id}/pretest', [DocxController::class, 'downloadDocx'])->name("pretest.docx");
         Route::post('/download-docx/{id}/examination', [DocxController::class, 'downloadwithTemplate'])->name("examination.docx");
