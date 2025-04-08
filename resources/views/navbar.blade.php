@@ -3,12 +3,12 @@
         <!-- Logo -->
         @if (auth()->user()->role == 'admin')
             <a class="navbar-brand" href="{{ route('admin.dashboard') }}">
-                <img src="https://via.placeholder.com/40" alt="Logo" class="me-2">Student Exam system
+                <img src="{{ asset('/img/avatar-01-removebg-preview.png') }}" alt="Logo" style="width:30px;height:30px;"  class="me-2">Student Exam system
             </a>
             
         @else
             <a class="navbar-brand" href="{{ route('student.dashboard') }}">
-                <img src="https://via.placeholder.com/40" alt="Logo" class="me-2">Student Exam system
+                <img src="{{ asset('/img/avatar-01-removebg-preview.png') }}" alt="Logo" style="width:30px;height:30px;" class="me-2">Student Exam system
             </a>
         @endif
         
@@ -22,6 +22,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 @if (auth()->user()->role == 'admin')
+                
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Question band</a>
                     <ul class="dropdown-menu">
@@ -39,18 +40,19 @@
                     </ul>
                    
                 </li>
-                
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('user.showlog') }}">User log</a>
+                    <a class="nav-link" href="{{ route('student.list') }}">Student list</a>
                 </li>
+                
                 <li class="nav-item">
                     {{-- <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                         More
                     </a> --}}
-                    <a class="nav-link  dropdown" href="{{ route('demoexam.review.list') }}">result list</a>
-                    
+                    <a class="nav-link  dropdown" href="{{ route('demoexam.review.list') }}">Result list</a>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('user.showlog') }}">User log</a>
+                </li>
                 @endif
                 
                 @auth

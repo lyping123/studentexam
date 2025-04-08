@@ -50,7 +50,7 @@
                             <select name="search" id="" class="form-control">
                                 <option value="">Choose subject title</option>
                                 @foreach ($subject_titles as $subject_title)
-                                    <option value="{{ $subject_title->id }}">{{ $subject_title->subject_name }}</option>
+                                    <option {{ $subject_title->id==request()->get('search')? "selected": "" }} value="{{ $subject_title->id }}">{{ $subject_title->subject_name }}</option>
                                 @endforeach
                             </select>
                             <button class="btn btn-outline-secondary" type="submit">Search</button>

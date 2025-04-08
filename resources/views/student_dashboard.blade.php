@@ -8,7 +8,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h5 class="card-title">Profile</h5>
-                    <p><strong>Name:</strong> {{ auth()->user()->Name }}</p>
+                    <p><strong>Name:</strong> {{ auth()->user()->name }}</p>
                     <p><strong>Role:</strong> Student</p>
                 </div>
             </div>

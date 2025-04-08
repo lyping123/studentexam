@@ -34,6 +34,9 @@
                             <td style="display: flex;">
                                 <a href="{{ route('demoexam.index', $question_paper->id) }} " target='_blank' class="btn btn-secondary btn-sm"><i class="fa fa-share-square-o" aria-hidden="true"></i>
                                 </a>
+                                {{-- <a href="{{ route('download.docx', $question_paper->id) }}" class="btn btn-info btn-sm"><i class="fa fa-download"></i></a> --}}
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" value="{{ $question_paper->id }}"  data-target="#downloadModal"><i class="fa fa-download" aria-hidden="true"></i>
+                                </button>
                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" value="{{ $question_paper->id }}"  data-target="#editModal"><i class="fa fa-cog" aria-hidden="true"></i>
                                 </button>
                                 <button type="button" class="btn btn-primary btn-sm sharelink" value="{{ encrypt($question_paper->id) }}"><i class="fa fa-clone" aria-hidden="true"></i></button>
@@ -99,6 +102,48 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Convert to word document</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        
+                        <input type="hidden" id="downloadId" value="" />
+                        <div class="modal-body">
+                            <form id="downloadForm" method="POST">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="limit_submit" class="form-label">Exam type</label>
+                                    <div class="mb-3">
+                                        <input type="radio" id="limit_1" checked name="exam_type" value="pretest" >
+                                        <label for="limit_1">Pretest</label>
+                                        <input type="radio" id="limit_2" name="exam_type" value="examination" >
+                                        <label for="limit_2">Examination</label>
+                                    </div>
+                                </div>
+                                <div id="download_content" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="code_program" class="form-label">Code program</label>
+                                        <input type="text" class="form-control" id="code_program" name="code_program" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="program_name" class="form-label">Program name</label>
+                                        <input type="text" class="form-control" id="program_name" name="program_name" />
+                                    </div>
+                                </div>
+                            
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="saveChanges">Download</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
     </div>
     <script>
     $(document).ready(function() {
@@ -127,6 +172,29 @@
                 $("#editModal").modal("show");
             });
         });
+        $("#questionTable").on("click",".btn-info",function() {
+            var id = $(this).val();
+            $("#downloadId").val(id);
+            $("#downloadModal").modal("show");
+        });
+
+        $("#downloadModal").on("change","input[type='radio']",function(){
+            var exam_type = $(this).val();
+            var id = $("#downloadId").val();
+            if(exam_type=="pretest"){
+                $("#downloadForm").attr("action", `{{ route('pretest.docx',':paper_id') }}`.replace(':paper_id',id));
+                $("#code_program").attr("required",false);
+                $("#program_name").attr("required",false);
+                $("#download_content").attr("style","display:none;");
+            }else{
+                $("#downloadForm").attr("action", `{{ route('examination.docx',':paper_id') }}`.replace(':paper_id',id));
+                $("#code_program").attr("required",true);
+                $("#program_name").attr("required",true);
+                $("#download_content").attr("style","display:block;");
+            }
+            
+        });
+
         $('#questionTable').on("click",".sharelink",function() {
             var id = $(this).val();
 

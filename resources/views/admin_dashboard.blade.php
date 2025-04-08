@@ -48,7 +48,7 @@
                 <ul class="list-group">
                     @foreach ($recentStudents as $student)
                         <li class="list-group-item d-flex justify-content-between">
-                            <span>{{ $student->name }} ({{ $student->ic }})</span>
+                            <span>{{ $student->name }}</span>
                             <span class="badge bg-primary">{{ $student->created_at->diffForHumans() }}</span>
                         </li>
                     @endforeach

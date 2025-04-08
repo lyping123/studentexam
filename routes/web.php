@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ajaxController;
 use App\Http\Controllers\demoExamController;
+use App\Http\Controllers\DocxController;
 use App\Http\Controllers\examController;
 use App\Http\Controllers\logController;
 use App\Http\Controllers\studentController;
@@ -56,6 +57,9 @@ Route::middleware(['role:admin'])->group(function(){
         Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
         Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review");
         Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("demoexam.review.list");
+
+        Route::post('/download-docx/{id}/pretest', [DocxController::class, 'downloadDocx'])->name("pretest.docx");
+        Route::post('/download-docx/{id}/examination', [DocxController::class, 'downloadwithTemplate'])->name("examination.docx");
 
         Route::get("/showlog",[logController::class,'showlog'])->name("user.showlog");
         Route::get("/undo/{log_id}",[logController::class,'undo'])->name("undo.action");
