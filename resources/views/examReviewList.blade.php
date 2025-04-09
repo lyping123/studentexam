@@ -98,7 +98,7 @@
                                 <td>{{ round(($examAttenpt->correct_answers/max(1,$examAttenpt->student_answer->count()))*100,2) }}</td>
                                 <td>{{ $examAttenpt->created_at->format('d-m-Y H:i:s') }}</td>
                                 <td>
-                                    <a href="{{ route('demoexam.review', $examAttenpt->id) }}" class="btn btn-primary btn-sm">View</a>
+                                    <a href="{{ route('demoexam.review.admin', $examAttenpt->id) }}" class="btn btn-primary btn-sm">View</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -139,10 +139,12 @@
                                     @endphp
                                     @if (!$date->isSaturday() && !$date->isSunday())
                                         @php
+                                            
                                             $score = $examAttenpts->where('student_id', $examAttenpt->student_id)
                                                 ->where('created_at', '>=', $date->startOfDay())
                                                 ->where('created_at', '<', $date->endOfDay())
                                                 ->first();
+                                            // dd($score);
                                         @endphp
                                         <td>{{ $score ? round(($score->correct_answers / max(1, $score->student_answer->count())) * 100,0)."%" : '-' }}</td>
                                     @endif

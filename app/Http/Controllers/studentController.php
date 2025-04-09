@@ -19,6 +19,7 @@ class studentController extends Controller
     public function index()
     {
         $examAttenpts=ExamAttempt::where("student_id",Auth::id())->get();
+
         foreach ($examAttenpts as $attempt) {
             $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
                 ->whereHas('subject', function ($query) {
@@ -28,7 +29,11 @@ class studentController extends Controller
             $attempt->correct_answers = $correctCount ? $correctCount : 0;
         }
 
-        $upcomingExams=question_paper::where("status",true)->latest()->take(5)->get();
+        
+        $upcomingExams=question_paper::where("status",true)->whereHas("exam_question",function($query){
+            $studentGroup=student::where("student_id",Auth::id())->first();
+            $query->where("user_id",$studentGroup->user_id);  
+        })->latest()->take(5)->get();
         return view('student_dashboard',compact("examAttenpts","upcomingExams"));
     }
 

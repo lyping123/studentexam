@@ -16,6 +16,7 @@ class DocxController extends Controller
     public function downloadDocx($id)
     {
         $question_paper =question_paper::find($id);
+        // dd($question_paper);
         
         $phpWord = new PhpWord();
         $section = $phpWord->addSection();

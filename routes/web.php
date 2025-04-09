@@ -56,7 +56,7 @@ Route::middleware(['role:admin'])->group(function(){
 
         Route::get("/demoquestion/{question_paper}",[demoExamController::class,"index"])->name("demoexam.index");
         Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
-        Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review");
+        Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review.admin");
         Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("demoexam.review.list");
         Route::get("/demoexam.share.calendar",[demoExamController::class,'demoexamShareCalendar'])->name("exam.share.calendar");
 
@@ -70,7 +70,7 @@ Route::middleware(['role:admin'])->group(function(){
 Route::middleware(['role:student'])->group(function () {
     Route::prefix("student")->group(function(){
         Route::get("/dashboard",[studentController::class,'index'])->name("student.dashboard");
-        Route::get("/demoquestion/{question_paper}",[demoExamController::class,"index"])->name("student.demoexam.index");
+        Route::get("/demoquestion/{question_paper}",[demoExamController::class,"indexStudent"])->name("student.demoexam.index");
         Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
         Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review");
         Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("student.demoexam.review.list");

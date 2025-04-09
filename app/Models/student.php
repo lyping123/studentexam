@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class student extends Model
 {
@@ -21,6 +22,15 @@ class student extends Model
         $this->belongsTo(User::class,"student_id","id");
     }
 
-    
-   
+    protected static function booted()
+    {
+        static::addGlobalScope('user', function ($builder) {
+            if (auth()->check()) {
+                if (Auth::user()->role === 'admin') {
+                    $builder->where('user_id', Auth::id());
+                }
+                return ;
+            }
+        });
+    }
 }

@@ -280,6 +280,7 @@ class examController extends Controller
     {
         $question_papers=question_paper::all();
         
+        
         return view("viewsetexam",compact("question_papers"));
     }
 

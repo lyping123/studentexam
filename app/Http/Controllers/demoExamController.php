@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\exam_question;
 use App\Models\StudentAnswer;
 use App\Models\question_paper;
+use App\Models\student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 
@@ -15,6 +16,16 @@ class demoExamController extends Controller
 {
     public function index($question_paper){
         // dd($question_paper);
+        
+        $question_paper=question_paper::find($question_paper);
+        
+        $exam_questions = $question_paper->exam_question()->get();
+        return view('demoExam',compact("exam_questions","question_paper"));
+    }
+
+    public function indexStudent($question_paper){
+        // dd($question_paper);
+        
         $decryptedId = Crypt::decrypt($question_paper);
         $question_paper=question_paper::find($decryptedId);
         
@@ -69,39 +80,47 @@ class demoExamController extends Controller
         $attenpt_id=$ExamAttempt->id;
 
         $exam_questions=$ExamAttempt->question_paper->exam_question()->get();
+        // dd($exam_questions=$ExamAttempt->question_paper);
         $question_paper=$ExamAttempt->question_paper();
         
         $studentAnswers=StudentAnswer::where("attempt_id",$attenpt_id)->pluck('answer',"subject_id");
-       
+        
         return view("examReview",compact("studentAnswers","question_paper","exam_questions"));
     }
 
     public function examReviewlist()
     {
         $question_papers=question_paper::all();
-        $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))->get();
-
+        $studentGroup = student::all();
+        
+        $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))
+            ->whereIn("student_id", $studentGroup->pluck('student_id'))
+            ->get();
+        // dd($examAttenpts);
         foreach ($examAttenpts as $attempt) {
             $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
                 ->whereHas('subject', function ($query) {
-                    $query->whereColumn('student_answers.answer', 'subjects.correct_ans');
+                    $query->whereColumn('student_answers.answer', 'subjects.correct_ans')->withoutGlobalScopes();
                 })
                 ->count();
             $attempt->correct_answers = $correctCount ? $correctCount : 0;
+            
         }
         
-        // dd();
+        
+        
         return view("examReviewList",compact("examAttenpts","question_papers"));
     }
     public function demoexamShareCalendar()
     {
         $question_papers=question_paper::all();
+        
         $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))->get();
 
         foreach ($examAttenpts as $attempt) {
             $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
                 ->whereHas('subject', function ($query) {
-                    $query->whereColumn('student_answers.answer', 'subjects.correct_ans');
+                    $query->whereColumn('student_answers.answer', 'subjects.correct_ans')->withoutGlobalScopes();
                 })
                 ->count();
             $attempt->correct_answers = $correctCount ? $correctCount : 0;
