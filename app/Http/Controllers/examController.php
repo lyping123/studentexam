@@ -146,7 +146,8 @@ class examController extends Controller
         $subject_titles=subject_title::all();
         $question_papers=exam_question::where("status",false)->get();
         $search=$request->input("search");
-        $subjects=subject::filter($search)->get();
+
+        $subjects=subject::filter($search)->whereNotIn("id",$question_papers->pluck("subject_id"))->get();
         return view('setupexam',compact('subjects','subject_titles','question_papers'));
     }
 
@@ -168,14 +169,14 @@ class examController extends Controller
         $paper=$question_paper;
         
         $search=$request->input("search");
-        $subjects=subject::filter($search)->get();
+        $subjects=subject::filter($search)->whereNotIn("id",$question_papers->pluck("subject_id"))->get();
         return view('setupexam_edit',compact('subjects','subject_titles','question_papers','paper'));
     }
 
     public function updatequestion(Request $request,question_paper $question_paper)
     {
         $request->validate([
-            "paper_name"=>"required|unique:question_papers,paper_name"
+            "paper_name"=>"required|unique:question_papers,paper_name,".$question_paper->id
         ]);
 
         $exam_question=$question_paper->exam_question();
@@ -197,6 +198,7 @@ class examController extends Controller
 
     public function setquestion(Request $request)
     {
+        
         if($request->input("question_paper_id")){
             $subjects=$request->input("checkid");
             foreach($subjects as $subject){
@@ -217,8 +219,13 @@ class examController extends Controller
             $examquestions->status=false;
             $examquestions->save();
         }
+        $search = $request->input("search") ?? "";
 
-        return redirect()->route("exam.stuquestiton")->with("success","Question addded success");
+        if ($search) {
+            return redirect()->route("exam.stuquestiton", ['search' => $search])->with("success", "Question added successfully with search filter applied");
+        }
+
+        return redirect()->route("exam.stuquestiton")->with("success", "Question added successfully");
     }
 
 
@@ -247,27 +254,47 @@ class examController extends Controller
         return redirect()->route("exam.stuquestiton")->withErrors("set question added fail");
 
     }
-    public function deletesetupAll()
+    public function deletesetupAll(Request $request)
     {
         $examquestions=exam_question::where("user_id",Auth::id())->where("status",false);
         $examquestions->delete();
+
+        $search = $request->input("search") ?? "";
+
+        if ($search) {
+            return redirect()->route("exam.stuquestiton", ['search' => $search])->with("success", "exam question deleted success");
+        }
+
         return redirect()->route("exam.stuquestiton")->with("success","exam question deleted success");
     }
 
     public function deleteupdateAll(question_paper $question_paper)
     {
         $question_paper->exam_question->delete();
+        $search= request()->input("search") ?? "";
+        if ($search) {
+            return redirect()->route("exam.stuquestiton", ['search' => $search])->with("success", "exam question deleted success");
+        }
         return redirect()->route("exam.editquestion",$question_paper->id)->with("success","exam question deleted success");
     }
     public function deletesetup(exam_question $exam_question)
     {
         $exam_question->delete();
+        $search = request()->input("search") ?? "";
+        if ($search) {
+            return redirect()->route("exam.stuquestiton", ['search' => $search])->with("success", "exam question deleted success");
+        }
         return redirect()->route("exam.stuquestiton")->with("success","exam question deleted success");
     }
 
     public function deleteupdate(exam_question $exam_question,question_paper $question_paper)
     {
+        
         $exam_question->delete();
+        $search = request()->input("search") ?? "";
+        if ($search) {
+            return redirect()->route("exam.stuquestiton", ['search' => $search])->with("success", "exam question deleted success");
+        }
         return redirect()->route("exam.editquestion",$question_paper->id)->with("success","exam question deleted success");
     }
 

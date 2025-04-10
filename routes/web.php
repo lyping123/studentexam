@@ -27,6 +27,8 @@ Route::middleware(['role:admin'])->group(function(){
         Route::get("/studentList",[studentController::class,"studentListPage"])->name("student.list");
         Route::post("/student/submit",[studentController::class,"student_register"])->name("student.submit");
         Route::delete("/student/delete/{id}",[studentController::class,"destroy"])->name("student.delete");
+        Route::get("/student/edit/{id}",[ajaxController::class,"studentEdit"])->name("student.edit");
+        Route::post("/student/edit/{id}",[studentController::class,"student_update"])->name("student.update");
 
         Route::get('/dashboard',[examController::class,'dashboard'])->name('admin.dashboard');
         Route::get('/',[examController::class,'index'])->name("exam.index");

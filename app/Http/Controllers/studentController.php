@@ -140,4 +140,18 @@ class studentController extends Controller
         $user->delete();
         return redirect()->route("student.list")->with("success","Student deleted successfully");
     }
+
+    public function student_update(Request $request,$id)
+    {
+        $student=User::find($id);
+        $request->validate([
+            'name' => 'required',
+            'password' => 'required|confirmed'
+        ]);
+        $student->name = $request->name;
+        $student->password= $request->password;
+        $student->save();
+        return redirect()->route('student.list')->with('success', 'Student updated successfully.');
+
+    }
 }

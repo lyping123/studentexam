@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\question_paper;
-use App\Models\subject_title;
-use Illuminate\Http\Request;
 use PDO;
+use App\Models\User;
+use Illuminate\Http\Request;
+use App\Models\subject_title;
+use App\Models\question_paper;
 
 class ajaxController extends Controller
 {
@@ -28,6 +29,14 @@ class ajaxController extends Controller
         $question_paper=question_paper::find($id);
         return response()->json([
             "data"=>$question_paper,
+            "status"=>200
+        ]);
+    }
+
+    public function studentEdit($id){
+        $student=User::find($id);
+        return response()->json([
+            "data"=>$student,
             "status"=>200
         ]);
     }

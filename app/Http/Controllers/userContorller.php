@@ -35,8 +35,9 @@ class userContorller extends Controller
 
         }
         
+        $remember=$request->filled('remember');
         if ($userexits->password==$request->password) {
-            Auth::login($userexits);
+            Auth::login($userexits,$remember);
             $request->session()->regenerate();
             if(Auth::user()->role == 'admin'){
                 
@@ -94,24 +95,4 @@ class userContorller extends Controller
         ]);
     }
     
-
-    public function studentRegister(Request $request){
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'ic' => 'required',
-            'password' => 'required|confirmed',
-            'course' => 'required'
-        ]);
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->ic= $request->ic;
-        $user->role = 'student';
-        $user->password = $request->password;
-        $user->course_id = $request->course;
-        $user->save();
-
-        return redirect()->route('user.login');
-    }
 }

@@ -34,6 +34,7 @@
                         <form action="{{ route('exam.setquestion') }}" method="POST">
                         @csrf
                         <div class="d-flex justify-content-between">
+                            <input type="hidden" name="search" value="{{ request()->get('search') ?? '' }}">
                             <input type="checkbox" id="checkall" class="form-check-input me-1" >
                             <button type="submit" class="btn btn-success">Import</button>
                         </div>
@@ -65,6 +66,7 @@
                             @csrf
                             @method("PUT")
                         <div class="input-group mb-3">
+                            
                             <input type="text" class="form-control" placeholder="add question paper name" name="paper_name" value="">
                             
                             <button class="btn btn-outline-success" type="submit">Submit</button>
@@ -73,6 +75,7 @@
                         <form method="POST" action="{{ route('exam.setup.deleteAll') }}">
                             @csrf
                             @method('delete')
+                            <input type="hidden" name="search" value="{{ request()->get('search') ?? '' }}">
                             <button type="submit" class="btn btn-danger">Clear all</button>
 
                         </form>
@@ -84,6 +87,7 @@
                                     <form action="{{ route('exam.setup.delete',$question_paper->id) }}" method="POST">
                                         @csrf
                                         @method("DELETE")
+                                        <input type="hidden" name="search" value="{{ request()->get('search') ?? '' }}">
                                     <li class="list-group-item ">
                                         <button type="submit" class="btn btn-danger btn-sm" >
                                             <i class="fa fa-times"></i> <!-- Font Awesome "X" icon -->

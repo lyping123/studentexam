@@ -54,10 +54,10 @@
                         <td>{{ $student->user->name }}</td>
                         <td>{{ $student->user->password}}</td>
                         <td>
-                            <button class="btn btn-warning">Edit</button>
+                            <button class="btn btn-warning" data-id={{ $student->user->id }}>Edit</button>
                         </td>
                         <td>
-                            <form action="{{  route('student.delete', $student->id) }} " method="post">
+                            <form action="{{  route('student.delete', $student->user->id) }} " method="post">
                                 @csrf
                                 @method('DELETE')
                             <button class="btn btn-danger">Delete</button>
@@ -71,16 +71,16 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Register Student</h5>
+                        <h5 class="modal-title" id="editModalLabel">Model Student</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     
                     <div class="modal-body">
-                        <form id="addForm" action="{{ route('student.submit') }}" method="POST">
+                        <form id="addForm"  method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Student Name</label>
-                                <input type="text" class="form-control" id="name" name="name" />
+                                <input type="text" class="form-control" id="s_name" name="name" />
                             </div>
                             
                             <div class="mb-3">
@@ -115,7 +115,30 @@
     <script>
         $(document).ready(function() {
             $("#addstudent").on("click",function(){
+                $("#addForm").attr("action", "{{ route('student.submit') }}");
                 $("#addStudent").modal("show");
+            });
+
+            $("tbody").on("click",".btn-warning",function(){
+                var id = $(this).data("id");
+                $("#addForm").attr("action", "{{ route('student.update', '') }}/"+id); 
+                $("#addForm").attr("method", "POST");
+                $("#addForm").attr("id", "editForm");
+                $("#addForm").attr("enctype", "multipart/form-data");
+                fetchedData = $.ajax({
+                    url: "{{ route('student.edit', '') }}/"+id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        console.log(data.data);
+                        $("#s_name").val(data.data.name);
+                        let l_id={{ auth()->user()->id }};
+                        $(`#status option[value="${l_id}"]`).prop("selected", true);
+                    }
+                });
+                $("#addStudent").modal("show");
+
+
             });
         });
     </script>
