@@ -5,7 +5,7 @@
     <h2 class="text-center mb-4">Add Question Band Form</h2>
 
     <div class="card shadow p-4">
-        <form action="{{ route('exam.addquestion.submit') }}" method="POST">
+        <form action="{{ route('exam.addquestion.submit') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="mb-3">
@@ -16,8 +16,30 @@
                 </ul>
             </div>
             <div class="mb-3">
+                <label for="question_type" class="form-label">Choose Question Type</label><br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" checked type="radio" name="question_type" id="subject_question" value="subject" required>
+                    <label class="form-check-label" for="subject_question">
+                        Subject Question
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input"  type="radio" name="question_type" id="picture_question" value="picture" required>
+                    <label class="form-check-label" for="picture_question">
+                        Picture Question
+                    </label>
+                </div>
+                
+                
+            </div>
+            
+            <div class="mb-3">
                 <label for="exam_title" class="form-label">Subject Title</label>
-                <textarea class="form-control" name="sub_title" id="" cols="30" rows="5"></textarea>
+                <div id="question-type">
+
+                    <textarea class="form-control" name="sub_title" id="" cols="30" rows="5"></textarea>
+                </div>
+                
             </div>
 
             <!-- Subject Selection -->
@@ -76,6 +98,38 @@ $(document).ready(function () {
 
     $(document).on("click", ".remove-question", function () {
         $(this).closest("tr").remove();
+    });
+
+    $(document).on("change",".form-check-input",function(){
+        let value=$(this).val();
+        
+        let questionType=$("#question-type");
+        // console.log(questionType.html());
+        if(value=="subject"){
+            questionType.html(`<textarea class="form-control" name="sub_title" id="" cols="30" rows="5"></textarea>`);
+        }else if(value=="picture"){
+            questionType.html(`
+            <input type="file" class="form-control" name="sub_image" id="sub_image" required /> 
+            <br>
+            <img id="preview_image" src="" alt="Preview" style="display:none; max-width: 200px; margin-top: 10px;">
+            <br> 
+            <br>
+            <textarea class="form-control" name="sub_title" id="" cols="30" rows="5" placeholder='subject title' ></textarea>
+            `);
+        }
+    });
+
+    $(document).on("change","#sub_image",function(){
+        const file=this.files[0];
+        if(file){
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#preview_image')
+                    .attr('src', e.target.result)
+                    .show(); // show if hidden
+            };
+            reader.readAsDataURL(file);
+        }
     });
     
 });

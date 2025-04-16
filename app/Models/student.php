@@ -19,7 +19,11 @@ class student extends Model
         return $query;
     }
     public function user(){
-        $this->belongsTo(User::class,"student_id","id");
+        return $this->belongsTo(User::class,"student_id","id");
+    }
+
+    public static function studentGroup(){
+        return self::where("user_id", Auth::id())->get();
     }
 
     protected static function booted()

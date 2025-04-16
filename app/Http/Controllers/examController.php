@@ -12,7 +12,9 @@ use App\Models\exam_question;
 use App\Models\StudentAnswer;
 use App\Models\subject_title;
 use App\Models\question_paper;
+use App\Models\student;
 use Illuminate\Support\Facades\Auth;
+use stdClass;
 
 class examController extends Controller
 {
@@ -39,16 +41,36 @@ class examController extends Controller
             ]);
             
         }
+
         $subbtitlei_id=$subject_title->id;
+        $myContent=new stdClass();
+
+        if($request->question_type=="picture"){
+            $myContent->type="picture";
+            $path = "img/question_band";
+            if ($request->hasFile("sub_image")) {
+                $file = $request->file("sub_image");
+                $filename = time() . "_" . $file->getClientOriginalName();
+                $file->move(public_path($path), $filename);
+                $myContent->content = $path . "/" . $filename;
+            }
+        }
+
+        
+        $myJson=json_encode($myContent);
+
+        $myJson=json_encode($myContent);
+        // dd($myJson);
         
         $subject=subject::create([
             "user_id"=>Auth::id(),
             "sub_title"=>$request->sub_title,
+            "sub_content"=>$myJson,
             "correct_ans"=>$request->correct_ans,
             "subject_id"=>$subbtitlei_id
         ]);
         if($subject){
-            // dd($request->options);
+            
             $options=$request->options;
             
             $array=array("A","B","C","D");
@@ -86,10 +108,28 @@ class examController extends Controller
             ]);
             
         }
+
+
         $subbtitlei_id=$subject_title->id;
+        $myContent=new stdClass();
+
+        if($request->question_type=="picture"){
+            $myContent->type="picture";
+            $path = "img/question_band";
+            if ($request->hasFile("sub_image")) {
+                $file = $request->file("sub_image");
+                $filename = time() . "_" . $file->getClientOriginalName();
+                $file->move(public_path($path), $filename);
+                $myContent->content = $path . "/" . $filename;
+            }
+        }
+
+
+        $myJson=json_encode($myContent);
         $subject->update([
             "sub_title"=>$request->sub_title,
             "correct_ans"=>$request->correct_ans,
+            "sub_content"=>$myJson,
             "subject_id"=>$subbtitlei_id,
         ]);
         $subject->questions()->delete();
@@ -122,13 +162,18 @@ class examController extends Controller
             $attempt->correct_answers = $correctCount ? $correctCount : 0;
             $attempt->total_mark=round(($attempt->correct_answers/max(1,$attempt->student_answer->count()))*100,2);
         }
-       
+
+        $recentStudentsAttenpts=student::studentGroup();
+        
+        
+        $recentStudentsAttenpts->each(function ($student) use ($examAttenpts) {
+            $student->examAttempts = $examAttenpts->where("student_id",$student->student_id);
+        }); 
+
         $passed=$examAttenpts->where('total_mark','>=',60)->count();
         $failed=$examAttenpts->where('total_mark','<',60)->count();
 
-
-
-        return view('admin_dashboard',compact("recentStudents","total_student","totalPapers","passed","failed"));
+        return view('admin_dashboard',compact("recentStudents","total_student","totalPapers","passed","failed","recentStudentsAttenpts"));
     }
     public function index(Request $request)
     {

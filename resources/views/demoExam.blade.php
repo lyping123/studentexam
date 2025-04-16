@@ -9,12 +9,23 @@
         <input type="hidden" name="paper_id" value="{{ $question_paper->id }}">
 
         @foreach ($exam_questions as $question)
+
             <div class="card mb-3">
                 <div class="card-header">
                     <strong>Q{{ $loop->iteration }}: {{ $question->subject->sub_title }}</strong>
                 </div>
                 <div class="card-body">
-                    
+                    <div class="form-group">
+                        @php
+                            if($question->subject->sub_content!=""){
+                                $content=json_decode($question->subject->sub_content);
+                            }
+                            
+                        @endphp
+                        @if ($content!=="")
+                            <img src="{{ asset($content->content) }}" alt="preview image" style="display:block; max-width: 200px; max-height:150px; margin-top: 10px;" >
+                        @endif
+                    </div>
                     @foreach ($question->subject->questions as $key => $option)
                         <div class="form-check">
                             

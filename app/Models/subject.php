@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class subject extends Model
 {
-    protected $fillable = ['user_id','sub_title','correct_ans','subject_id'];
+    protected $fillable = ['user_id','sub_title','sub_content','correct_ans','subject_id'];
 
     // ✔ booted() → Runs when the model is used.
     // ✔ addGlobalScope('user', function (Builder $builder) { ... }) → Automatically filters user_id.
