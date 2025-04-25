@@ -21,10 +21,22 @@ class student extends Model
     public function user(){
         return $this->belongsTo(User::class,"student_id","id");
     }
+    
 
     public static function studentGroup(){
+        // Uncomment this block if you want to filter by student name
+        // if($student != ""){
+        //     return self::where("user_id", Auth::id())
+        //         ->whereHas("user", function($query) use ($student) {
+        //             $query->where("name", "like", "%$student%");
+        //         })->get();
+        // }
         return self::where("user_id", Auth::id())->get();
     }
+
+    
+
+   
 
     protected static function booted()
     {

@@ -14,7 +14,7 @@
                             $year = now()->format('Y');
                             $date = \Carbon\Carbon::createFromDate($year, $month, $day);
                         @endphp
-                        @if (!$date->isSaturday() && !$date->isSunday())
+                        @if ($day <= $date->daysInMonth && $date->month == $month && !$date->isSaturday() && !$date->isSunday())
                             <th>{{ $day }}</th>
                         @endif
                     @endfor
@@ -33,7 +33,7 @@
                             @php
                                 $date = \Carbon\Carbon::createFromDate($year, $month, $day);
                             @endphp
-                            @if (!$date->isSaturday() && !$date->isSunday())
+                            @if ($day <= $date->daysInMonth && $date->month == $month && !$date->isSaturday() && !$date->isSunday())
                                 @php
                                     $score = $examAttenpts->where('student_id', $examAttenpt->student_id)
                                         ->where('created_at', '>=', $date->startOfDay())

@@ -19,10 +19,12 @@
                         @php
                             if($question->subject->sub_content!=""){
                                 $content=json_decode($question->subject->sub_content);
+                            }else{
+                                $content="";
                             }
                             
                         @endphp
-                        @if ($content!=="")
+                        @if ($content!="")
                             <img src="{{ asset($content->content) }}" alt="preview image" style="display:block; max-width: 200px; max-height:150px; margin-top: 10px;" >
                         @endif
                     </div>

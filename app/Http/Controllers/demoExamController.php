@@ -93,9 +93,36 @@ class demoExamController extends Controller
         $question_papers=question_paper::all();
         $studentGroup = student::all();
         
+        
         $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))
             ->whereIn("student_id", $studentGroup->pluck('student_id'))
             ->get();
+        
+        $s_name=request()->only('student');
+        
+        if(count($s_name)>0){
+            $calendar_modes=student::where("user_id",Auth::id())->whereHas("user",function($query) use ($s_name){
+                $query->where("name","like","%{$s_name['student']}%");
+            })->get();
+        }else{
+            $calendar_modes=$studentGroup;
+        }
+        
+        // foreach($calendar_modes as $calendar_mode){
+        //    $calendar_mode->username=$calendar_mode->user->name;
+        //    $student_attempt=$calendar_mode->user->exam_attempt->where("paper_id",7)->first();
+        //    if ($student_attempt) {
+        //        $correctCount=StudentAnswer::where('attempt_id', $student_attempt->id)
+        //             ->whereHas('subject', function ($query) {
+        //                 $query->whereColumn('student_answers.answer', 'subjects.correct_ans')->withoutGlobalScopes();
+        //             })
+        //             ->count();
+        //        $calendar_mode->correct_answers = $correctCount ? $correctCount : 0; 
+        //    } else {
+        //        $calendar_mode->correct_answers = 0;
+        //    }
+        // }
+        
         // dd($examAttenpts);
         foreach ($examAttenpts as $attempt) {
             $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
@@ -107,16 +134,16 @@ class demoExamController extends Controller
             
         }
         
-        
-        
-        return view("examReviewList",compact("examAttenpts","question_papers"));
+        return view("examReviewList",compact("examAttenpts","question_papers","calendar_modes"));
     }
     public function demoexamShareCalendar()
     {
         $question_papers=question_paper::all();
-        
         $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))->get();
 
+        $s_name=request()->only('student');
+        
+        
         foreach ($examAttenpts as $attempt) {
             $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
                 ->whereHas('subject', function ($query) {

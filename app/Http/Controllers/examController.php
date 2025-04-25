@@ -56,9 +56,6 @@ class examController extends Controller
             }
         }
 
-        
-        $myJson=json_encode($myContent);
-
         $myJson=json_encode($myContent);
         // dd($myJson);
         
@@ -151,7 +148,8 @@ class examController extends Controller
         $recentStudents = User::where('role', 'student')->latest()->take(5)->get();
         $total_student=User::where('role','student')->count();
         $totalPapers=question_paper::count();
-        $examAttenpts=ExamAttempt::where('created_at', '>=', now()->subDay())->get();
+        // dd(now()->subDay());
+        $examAttenpts=ExamAttempt::where('created_at', '=', now()->subDay())->get();
         
         foreach ($examAttenpts as $attempt) {
             $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
@@ -309,7 +307,6 @@ class examController extends Controller
         if ($search) {
             return redirect()->route("exam.stuquestiton", ['search' => $search])->with("success", "exam question deleted success");
         }
-
         return redirect()->route("exam.stuquestiton")->with("success","exam question deleted success");
     }
 
@@ -334,7 +331,6 @@ class examController extends Controller
 
     public function deleteupdate(exam_question $exam_question,question_paper $question_paper)
     {
-        
         $exam_question->delete();
         $search = request()->input("search") ?? "";
         if ($search) {
@@ -351,8 +347,6 @@ class examController extends Controller
     public function viewsetquestionPage()
     {
         $question_papers=question_paper::all();
-        
-        
         return view("viewsetexam",compact("question_papers"));
     }
 

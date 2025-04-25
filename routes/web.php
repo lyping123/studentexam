@@ -30,8 +30,8 @@ Route::middleware(['role:admin'])->group(function(){
         Route::get("/student/edit/{id}",[ajaxController::class,"studentEdit"])->name("student.edit");
         Route::post("/student/edit/{id}",[studentController::class,"student_update"])->name("student.update");
 
-        Route::get('/dashboard',[examController::class,'dashboard'])->name('admin.dashboard');
-        Route::get('/',[examController::class,'index'])->name("exam.index");
+        Route::get('/',[examController::class,'dashboard'])->name('admin.dashboard');
+        Route::get('/uploadexamform',[examController::class,'index'])->name("exam.index");
         Route::get("search",[examController::class,'search'])->name("exam.search");
         Route::post("/uploadJson",[examController::class,'uploadJson'])->name("exam.uploadJson");
         Route::get("/subject_title",[ajaxController::class,'getSubject'])->name("subject_title.search");
@@ -60,7 +60,7 @@ Route::middleware(['role:admin'])->group(function(){
         Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
         Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review.admin");
         Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("demoexam.review.list");
-        Route::get("/demoexam.share.calendar",[demoExamController::class,'demoexamShareCalendar'])->name("exam.share.calendar");
+        Route::get("/demoexam/share/calendar",[demoExamController::class,'demoexamShareCalendar'])->name("exam.share.calendar");
 
         Route::post('/download-docx/{id}/pretest', [DocxController::class, 'downloadDocx'])->name("pretest.docx");
         Route::post('/download-docx/{id}/examination', [DocxController::class, 'downloadwithTemplate'])->name("examination.docx");

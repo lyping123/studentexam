@@ -18,9 +18,10 @@ class ExamAttempt extends Model
                 
             //     $q->where("paper_name","like","%$search%");
             // });
-            if(request()->has("question_paper") && request("question_paper"!="")){
+            if(request()->has("question_paper") && request("question_paper")!=""){
+                
                 $query->whereHas("question_paper",function($q) use($search){
-                    $q->where("paper_name","like","%$search[question_paper]%");
+                    $q->where("id","$search[question_paper]");
                 });
             }
             if(request()->has("student") && request("student")!=""){

@@ -107,46 +107,84 @@
                 </table>
             </div>
             <div id="calendarMode" class="tab-pane fade show">
-                <button class="btn btn-primary mb-3 pull-right" id="sharecalendar" >share</button>
+                @php
+                    $paper_id=request()->get("question_paper")??0;
+                    $paper=\App\Models\question_paper::find($paper_id);
+                @endphp
+                <h4>{{ $paper->paper_name ?? "please choose a question paper 1st." }}</h4>
+                {{-- <button class="btn btn-primary mb-3 pull-right" id="sharecalendar" >share</button> --}}
                 <table class="table table-bordered">
                     <thead class="table-dark">
                         <tr>
-                            <th>Student Name</th>
+                            @php
+                                $columns=1;
+                            @endphp
                             @for ($day = 1; $day <= 31; $day++)
                                 @php
                                     $month = request('month') ? request('month') : now()->format('m');
                                     $year = now()->format('Y');
                                     $date = \Carbon\Carbon::createFromDate($year, $month, $day);
+                                   
                                 @endphp
-                                @if (!$date->isSaturday() && !$date->isSunday())
-                                    <th>{{ $day }}</th>
+                                @if ($day <= $date->daysInMonth && $date->month == $month && !$date->isSaturday() && !$date->isSunday())
+                                    @php
+                                        $columns+=1;
+                                    @endphp
+                                @endif
+                            @endfor
+                            <tr style="border-radius:1px solid; text-align:center;">
+                                <td colspan="{{ $columns }}">{{ \Carbon\Carbon::createFromDate(now()->year, request('month') ?? now()->month, 1)->format('F') }}</td>
+                                
+                            </tr>
+                        </tr>
+                        
+                        <tr>
+                            <th>Student Name</th>
+                            
+                            @for ($day = 1; $day <= 31; $day++)
+                                @php
+                                    $month = request('month') ? request('month') : now()->format('m');
+                                    $year = now()->format('Y');
+                                    $date = \Carbon\Carbon::createFromDate($year, $month, $day);
+                                   
+                                @endphp
+                                @if ($day <= $date->daysInMonth && $date->month == $month && !$date->isSaturday() && !$date->isSunday())
+                                    @php
+                                        $columns+=1;
+                                    @endphp
+                                    <th>{{ $date->format('d') }}</th>
                                 @endif
                             @endfor
                         </tr>
+                        
                     </thead>
                     <tbody>
-                        @if(count($examAttenpts) == 0)
+                        @if(count($calendar_modes) == 0)
                             <tr>
                                 <td colspan="32" class="text-center">No data found</td>
                             </tr>
                         @endif
-                        @foreach ($examAttenpts as $examAttenpt)
+                        {{-- @dd($calendar_modes) --}}
+                        
+                        @foreach ($calendar_modes as $calendar_mode)
                             <tr>
-                                <td>{{ $examAttenpt->user->name }}</td>
+                                <td>{{ $calendar_mode->user->name }}</td>
                                 @for ($day = 1; $day <= 31; $day++)
                                     @php
+                                        $month = request('month') ? request('month') : now()->format('m');
+                                        $year = now()->format('Y');
                                         $date = \Carbon\Carbon::createFromDate($year, $month, $day);
                                     @endphp
-                                    @if (!$date->isSaturday() && !$date->isSunday())
+                                    @if ($day <= $date->daysInMonth && $date->month == $month && !$date->isSaturday() && !$date->isSunday())
                                         @php
-                                            
-                                            $score = $examAttenpts->where('student_id', $examAttenpt->student_id)
+                                            $paper_id = request()->get("question_paper");
+                                            $score = $examAttenpts->where('student_id', $calendar_mode->student_id)
+                                                ->where("paper_id", $paper_id)
                                                 ->where('created_at', '>=', $date->startOfDay())
                                                 ->where('created_at', '<', $date->endOfDay())
                                                 ->first();
-                                            // dd($score);
                                         @endphp
-                                        <td>{{ $score ? round(($score->correct_answers / max(1, $score->student_answer->count())) * 100,0)."%" : '-' }}</td>
+                                        <td>{{ $score ? round(($score->correct_answers / max(1, $score->student_answer->count())) * 100, 0) . "%" : '-' }}</td>
                                     @endif
                                 @endfor
                             </tr>
