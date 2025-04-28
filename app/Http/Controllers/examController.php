@@ -54,6 +54,10 @@ class examController extends Controller
                 $file->move(public_path($path), $filename);
                 $myContent->content = $path . "/" . $filename;
             }
+        }else if($request->question_type=="subject"){
+            $myContent->type="subject";
+        }else if($request->question_type=="multiple"){
+            $myContent->type="multiple";
         }
 
         $myJson=json_encode($myContent);
@@ -380,10 +384,16 @@ class examController extends Controller
             
             $alphakey=range('A','Z');
             $subjectids=array();
+            
+            
+        
             foreach($exams as $exam){
                 $subject=subject::create([
                     'user_id'=>Auth::id(),
                     'sub_title'=>$exam['question'],
+                    'sub_content'=>json_encode([
+                        'type'=>'subject',
+                    ]),
                     'correct_ans'=>$exam['answer'],
                     'subject_id'=>$subbtitlei_id,
                 ]);

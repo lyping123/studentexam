@@ -40,7 +40,27 @@ class DocxController extends Controller
         $section->addTextBreak(); 
 
         foreach ($question_paper->exam_question as  $index=>$question) {
-            question_text($section,($index + 1) . ". " . $question->subject->sub_title);
+            $content=json_decode($question->subject->sub_content);
+            if ($content->type == "picture") {
+                $imagePath = public_path($content->content); // Assuming the image path is stored in $content->path
+                // dd(file_exists($imagePath));
+                if (file_exists($imagePath)) {
+                    $section->addImage($imagePath, [
+                        'width' => 300, // Adjust width as needed
+                        'height' => 200, // Adjust height as needed
+                    ]);
+                }
+            }
+            if (strpos($question->subject->sub_title, "\n") !== false) {
+                $lines = explode("\n", $question->subject->sub_title);
+                question_text($section, ($index + 1) . ". " . array_shift($lines));
+                foreach ($lines as $line) {
+                    question_text($section, "     " . $line);
+                }
+            } else {
+                question_text($section, ($index + 1) . ". " . $question->subject->sub_title);
+            }
+            // question_text($section,($index + 1) . ". " . $question->subject->sub_title);
             foreach($question->subject->questions as $question){
                 // $section->addText("     ".$question->question_title);
                 question_text($section, "     " . $question->question_title);
@@ -68,7 +88,29 @@ class DocxController extends Controller
         $templateProcessor->setValue('time', now()->format('d/m/Y'));
         $questionText = "";
         foreach ($question_paper->exam_question as $index => $question) {
-            $questionText .= ($index + 1) . ". " . $question->subject->sub_title . "\n";
+
+            if(strpos($question->subject->sub_title,"\n") !== false){
+                $lines = explode("\n", $question->subject->sub_title);
+                $questionText .= ($index + 1) . ". " . array_shift($lines) . "\n";
+                foreach ($lines as $line) {
+                    $questionText .= "\xA0\xA0\xA0\xA0\xA0\xA0" . $line . "\n";
+                }
+            }else{
+                $questionText .= ($index + 1) . ". " . $question->subject->sub_title . "\n";
+            }
+            
+            $content=json_decode($question->subject->sub_content);
+            if ($content->type == "picture") {
+                $imagePath = public_path($content->content); // Assuming the image path is stored in $content->path
+                if (file_exists($imagePath)) {
+                    // $questionText .= "\xA0\xA0\xA0\xA0\xA0\xA0[Image: " . $content->path . "]\n"; // Add a placeholder for the image
+                    $templateProcessor->setImageValue('image_' . $index, [
+                        'path' => $imagePath,
+                        'width' => 300, // Adjust width as needed
+                        'height' => 200, // Adjust height as needed
+                    ]);
+                }
+            }
             foreach ($question->subject->questions as $q) {
                 $questionText .= "\xA0\xA0\xA0\xA0\xA0\xA0" . $q->question_title . "\n";
             }

@@ -84,14 +84,35 @@
                         <tr class="main-row" data-toggle="subtable-{{ $subject->id }}">
                             <td><input type="checkbox" name="checkid[]" value="{{ $subject->id }}" id=""></td>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $subject->sub_title }}</td>
+                            <td>
+                                @if (strpos($subject->sub_title, "\n") !== false)
+                                    {!! nl2br(e($subject->sub_title)) !!}
+                                @else
+                                    {{ $subject->sub_title }}
+                                @endif
+                            </td>
                             <td>{{ $subject->subject_title->subject_name }}</td>
                             <td>
                                 <a href="{{ route('exam.editquestionband',$subject->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
                             </td>
                         </tr>
                         <tr id="subtable-{{ $subject->id }}" class="sub-table-row" style="display: none;">
-                            <td colspan="4">
+                            
+                            <td colspan="2">
+                                <div class="mb-2">
+                                    <strong>Question Content:</strong>
+                                    @php
+                                        $content=json_decode($subject->sub_content);
+                                    @endphp
+                                    @if ($content->type=="picture")
+                                        <img src="{{ asset($content->content) }}" alt="preview image" style="display:block; max-width: 200px; max-height:150px; margin-top: 10px;" >
+                                    @else
+                                        {{ "none content" }}
+                                    @endif
+                                </div>
+                            </div>
+                            </td>
+                            <td colspan="3">
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>

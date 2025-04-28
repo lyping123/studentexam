@@ -9,7 +9,7 @@
             @csrf
 
             <div class="mb-3">
-                <label for="subject_title" class="form-label">Subject Name</label>
+                <label for="subject_title" class="form-label">Subject Type</label>
                 <input type="text" class="form-control" id="subject_title" name="subject_title" required >
                 <ul class="list-group" id="subjectList">
                        
@@ -29,7 +29,12 @@
                         Picture Question
                     </label>
                 </div>
-                
+                {{-- <div class="form-check form-check-inline">
+                    <input class="form-check-input"  type="radio" name="question_type" id="picture_question" value="multitple" required>
+                    <label class="form-check-label" for="picture_question">
+                        Picture Question
+                    </label>
+                </div> --}}
                 
             </div>
             

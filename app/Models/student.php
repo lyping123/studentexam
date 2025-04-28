@@ -34,10 +34,6 @@ class student extends Model
         return self::where("user_id", Auth::id())->get();
     }
 
-    
-
-   
-
     protected static function booted()
     {
         static::addGlobalScope('user', function ($builder) {

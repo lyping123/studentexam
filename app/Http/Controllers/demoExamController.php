@@ -78,14 +78,18 @@ class demoExamController extends Controller
     {
         
         $attenpt_id=$ExamAttempt->id;
-
         $exam_questions=$ExamAttempt->question_paper->exam_question()->get();
         // dd($exam_questions=$ExamAttempt->question_paper);
-        $question_paper=$ExamAttempt->question_paper();
-        
+        $question_paper=$ExamAttempt->question_paper()->get();
+        // dd($question_paper);
         $studentAnswers=StudentAnswer::where("attempt_id",$attenpt_id)->pluck('answer',"subject_id");
+        $correctAnswersCount=StudentAnswer::where('attempt_id', $attenpt_id)
+            ->whereHas('subject', function ($query) {
+                $query->whereColumn('student_answers.answer', 'subjects.correct_ans')->withoutGlobalScopes();
+            })
+            ->count();
         
-        return view("examReview",compact("studentAnswers","question_paper","exam_questions"));
+        return view("examReview",compact("studentAnswers","question_paper","exam_questions","correctAnswersCount"));
     }
 
     public function examReviewlist()

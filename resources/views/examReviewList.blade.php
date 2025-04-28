@@ -111,8 +111,9 @@
                     $paper_id=request()->get("question_paper")??0;
                     $paper=\App\Models\question_paper::find($paper_id);
                 @endphp
-                <h4>{{ $paper->paper_name ?? "please choose a question paper 1st." }}</h4>
+                <h4>{{ $paper->paper_name ?? "please choose a question paper." }}</h4>
                 {{-- <button class="btn btn-primary mb-3 pull-right" id="sharecalendar" >share</button> --}}
+                
                 <table class="table table-bordered">
                     <thead class="table-dark">
                         <tr>
