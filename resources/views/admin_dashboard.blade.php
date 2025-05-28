@@ -59,6 +59,53 @@
             </div>
         </div>
     </div>
+
+    <div class="mt-3">
+        <div class="col-md-6">
+            <h3>Total student registration  graph</h3>
+            @php
+                $xValue = [];
+                $yValue = [];
+                $barColor = [];
+                foreach ($xAxis as $key => $value) {
+                    $xValue[] = $value;
+                    $yValue[] = $key;
+                    // Generate a random RGB color and format as 'rgba(r,g,b,0.7)'
+                    $r = rand(0, 255);
+                    $g = rand(0, 255);
+                    $b = rand(0, 255);
+                    $barColor[] = "rgba($r, $g, $b, 0.7)";
+                }
+            @endphp
+
+            <canvas id="myChart"></canvas>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                var xValues = {!! json_encode($yValue) !!};
+                var yValues = {!! json_encode($xValue) !!};
+                var barColors = {!! json_encode($barColor) !!};
+
+                new Chart("myChart", {
+                    type: "bar",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    },
+                    options: {
+                        legend: {display: false},
+                        title: {
+                            display: true,
+                            text: "Total student registration"
+                        }
+                    }
+                });
+            </script>
+        </div>
+    </div>
+    
     
     <div class="row">
         <div class="mt-4 col-md-6">

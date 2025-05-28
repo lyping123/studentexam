@@ -24,6 +24,9 @@ Route::get("/logout",[userContorller::class,'logout'])->name("user.logout");
 
 
 Route::middleware(['role:admin'])->group(function(){
+        Route::get("/profile",[userContorller::class,'profile'])->name("user.profile");
+        // Route::get("/profile/edit",[userContorller::class,'editProfile'])->name("user.profile.edit");
+        Route::put("/profile",[userContorller::class,'updateProfile'])->name("user.profile.update");
         Route::get("/studentList",[studentController::class,"studentListPage"])->name("student.list");
         Route::post("/student/submit",[studentController::class,"student_register"])->name("student.submit");
         Route::delete("/student/delete/{id}",[studentController::class,"destroy"])->name("student.delete");

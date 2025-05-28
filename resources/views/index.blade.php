@@ -7,6 +7,11 @@
         padding: 8px 12px; /* Adjust spacing */
     }
 
+    .pagination img {
+        max-width: 20px; /* Constrain image width */
+        max-height: 20px; /* Constrain image height */
+    }
+
     .pagination .page-item span,
     .pagination .page-item a {
         font-size: 16px; /* Adjust Next/Previous button size */
@@ -139,10 +144,16 @@
                         </tr>
                     @endforeach
                 </tbody>
+                 
             </table>
             </form>
+                    <div class="flex justify-center">
+                        {{ $subjects->links('pagination::bootstrap-5') }}
+                    </div>
+                
             
-            {{-- {{ $subjects->links() }} --}}
+            {{-- {!! $subjects->links()!!} --}}
+           
             
             
         </div>

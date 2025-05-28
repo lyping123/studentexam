@@ -175,13 +175,39 @@ class examController extends Controller
         $passed=$examAttenpts->where('total_mark','>=',60)->count();
         $failed=$examAttenpts->where('total_mark','<',60)->count();
 
-        return view('admin_dashboard',compact("recentStudents","total_student","totalPapers","passed","failed","recentStudentsAttenpts"));
+        $xAxis=["Jan"=>0,"Feb"=>0,"Mar"=>0,"Apr"=>0,"May"=>0,"Jun"=>0,"Jul"=>0,"Aug"=>0,"Sep"=>0,"Oct"=>0,"Nov"=>0,"Dec"=>0];
+        // $yAxis=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Octr","Nov","Dec"];
+        $studentListBar=User::where('role','student')->take(50)->get();
+       
+        $studentListBar->each(function ($student) use (&$xAxis) {
+            $date = $student->created_at->format('M');
+            
+            if (!array_key_exists($date, $xAxis)) {
+                $xAxis[$date] = 0;
+            }
+            
+            $xAxis[$date]++;
+        });
+       
+        // $xAxis=collect($xAxis);
+        // $xAxis=$xAxis->sortBy(function ($value, $key) {        
+        // $xAxis=$xAxis->map(function ($value, $key) use ($yAxis) {
+        //     $date = \Carbon\Carbon::createFromFormat('Y-m-d', $key);
+        //     return [
+        //         'date' => $date->format('d M'),
+        //         'value' => $value,
+        //     ];
+        // })->values()->all();
+        // $xAxis=collect($xAxis)->sortBy('date')->values()->all();
+
+
+        return view('admin_dashboard',compact("recentStudents","total_student","totalPapers","passed","failed","recentStudentsAttenpts","xAxis"));
     }
     public function index(Request $request)
     {
         $subject_titles=subject_title::all();
         $search=$request->input("search");
-        $subjects=subject::filter($search)->latest()->get();
+        $subjects=subject::filter($search)->latest()->paginate(10);
         // dd($subjects->subject_title);
         // $subject_title=subject::find(1);
         // dd($subject_title->subject_title);
@@ -245,7 +271,10 @@ class examController extends Controller
 
     public function setquestion(Request $request)
     {
-        
+        $request->validate([
+            "checkid"=>"required|array",
+        ]);
+
         if($request->input("question_paper_id")){
             $subjects=$request->input("checkid");
             foreach($subjects as $subject){

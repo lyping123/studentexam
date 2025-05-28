@@ -60,15 +60,17 @@
                     {{-- <li class="nav-item">
                         <a class="btn btn-danger ms-3" href="{{ route('user.logout') }}">Logout</a>
                     </li> --}}
+
                     <li class="nav-item dropdown ">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             {{ auth()->user()->name }}
                         </a>
                         <ul class="dropdown-menu">
-                            
+                            <li><a class="dropdown-item" href="{{  route('user.profile') }}"><i class="fa fa-cog" aria-hidden="true"></i> Setting</a></li>
                             <hr>
                             <li><a class="dropdown-item" href="{{ route('user.logout') }}"><i class="fa fa-sign-out" aria-hidden="true"></i>
                                   Logout</a></li>
+                            
                         </ul>
                     </li>
                 @else

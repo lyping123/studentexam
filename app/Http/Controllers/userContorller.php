@@ -94,5 +94,31 @@ class userContorller extends Controller
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
+
+    public function profile(){
+        $user=Auth::user();
+        return view('profile',compact('user'));
+    }
+
+    public function updateProfile(Request $request){
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+        ]);
+
+
+        $user=Auth::user();
+        $user->name=$request->name;
+        $user->email=$request->email;
+        if($request->checkpassword){
+            $request->validate([
+                'password' => 'required'
+            ]);
+            $user->password=$request->password;
+        }
+        
+        $user->save();
+        return redirect()->route('user.profile')->with("success","Profile updated successfully");
+    }
     
 }
