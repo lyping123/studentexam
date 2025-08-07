@@ -228,6 +228,7 @@ class examController extends Controller
         $formvalidated=$request->validate([
             "limit_submit_per_day"=>"required|boolean",
             "time_limit"=>"required|numeric",
+            "random_status"=>"required|boolean",
             "status"=>"required|boolean"
         ]);
         $question_paper=question_paper::find($id);
@@ -259,6 +260,7 @@ class examController extends Controller
         ]);
 
         $exam_question->update([
+            
             "status"=>true,
         ]);
 

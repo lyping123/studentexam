@@ -14,6 +14,7 @@
                         {{-- <th>Course</th> --}}
                         <th>limit submit per day</th>
                         <th>Time limit(minutes)</th>
+                        <th>Random status</th>
                         <th>Status</th>
                         {{-- <th>User created</th> --}}
                         <th>created Date</th>
@@ -33,11 +34,14 @@
                                 
                                 <td>{{ $question_paper->limit_submit_per_day==1 ? "yes":"no" }}</td>
                                 <td>{{ $question_paper->time_limit }}</td>
+                                <td>{{ $question_paper->random_status==1 ? "yes":"no" }}</td>
                                 <td>{{ $question_paper->status==1 ? "Active":"Inactive" }}</td>
+                                
                                 {{-- <td>{{ $question_paper->exam_question->first()->user->name }}</td> --}}
                                 <td>{{ $question_paper->created_at->format("d-m-Y") }}</td>
                                 <td style="display: flex;">
-                                    <a href="{{ route('demoexam.index', $question_paper->id) }} " target='_blank' class="btn btn-secondary btn-sm"><i class="fa fa-share-square-o" aria-hidden="true"></i>
+                                    <a href="{{ route('demoexam.index', $question_paper->id) }} " target='_blank' class="btn btn-secondary btn-sm"><i class="bi bi-reply-fill"></i>
+
                                     </a>
                                     {{-- <a href="{{ route('download.docx', $question_paper->id) }}" class="btn btn-info btn-sm"><i class="fa fa-download"></i></a> --}}
                                     <button type="button" class="btn btn-info btn-sm" data-toggle="modal" value="{{ $question_paper->id }}"  data-target="#downloadModal"><i class="fa fa-download" aria-hidden="true"></i>
@@ -48,7 +52,7 @@
                                 </td>
                                 <td>
                                     <a href="{{ route('exam.editquestion', $question_paper->id) }}" class="btn btn-warning btn-sm">
-                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        <i class="bi bi-pencil"></i>
                                     </a>
                                 </td>
                                 <td>
@@ -56,7 +60,8 @@
                                     <form method="POST" action="{{ route('exam.set.delete', $question_paper->id) }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" ><i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        <button type="submit" class="btn btn-danger btn-sm" ><i class="bi bi-trash"></i>
+
                                         </button>
                                     </form>
                                 </td>
@@ -90,6 +95,15 @@
                                 <div class="mb-3">
                                     <label for="time_limit" class="form-label">Time Limit (in minutes)</label>
                                     <input type="number" class="form-control" id="time_limit" name="time_limit" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="paper_name" class="form-label">Random question</label>
+                                    <br>
+                                    <input type="radio" id="paper_name" name="random_status" value="1" required>
+                                    <label for="paper_name">Yes</label>
+                                    <input type="radio" id="paper_name" name="random_status" value="0" required>
+                                    <label for="paper_name">No</label>
+
                                 </div>
                                 <div class="mb-3">
                                     <label for="status" class="form-label">Status</label>

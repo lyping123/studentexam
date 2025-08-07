@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer("total_question");
             $table->boolean("limit_submit_per_day")->default(0);
             $table->integer("time_limit")->nullable();
+            $table->boolean("random_status")->default(1);
             $table->boolean("status")->default(1);
             $table->timestamps();
         });

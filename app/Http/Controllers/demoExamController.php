@@ -18,8 +18,13 @@ class demoExamController extends Controller
         // dd($question_paper);
         
         $question_paper=question_paper::find($question_paper);
+        if($question_paper->random_status==1){
+            $exam_questions = $question_paper->exam_question()->inRandomOrder()->limit(60)->get();
+        }else{
+            $exam_questions = $question_paper->exam_question()->get();
+        }
         
-        $exam_questions = $question_paper->exam_question()->get();
+        
         return view('demoExam',compact("exam_questions","question_paper"));
     }
 
@@ -28,8 +33,13 @@ class demoExamController extends Controller
         
         $decryptedId = Crypt::decrypt($question_paper);
         $question_paper=question_paper::find($decryptedId);
+        if($question_paper->random_status==1){
+            $exam_questions = $question_paper->exam_question()->inRandomOrder()->limit(60)->get();
+        }else{
+            $exam_questions = $question_paper->exam_question()->get();
+        }
         
-        $exam_questions = $question_paper->exam_question()->get();
+        // $exam_questions = $question_paper->exam_question()->get();
         return view('demoExam',compact("exam_questions","question_paper"));
     }
 
