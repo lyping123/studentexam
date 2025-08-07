@@ -19,6 +19,7 @@
             <div class="col-sm-6 mb-3 mb-sm-0">
                 <div class="card">
                     <div class="card-body">
+                        
                         <form action="{{ route('exam.stuquestiton') }}" method="get">
                         <div class="input-group mb-3">
                             {{-- <input type="text" class="form-control" placeholder="Search by subject title" name="search" value="{{ request()->search }}"> --}}
@@ -41,8 +42,10 @@
                         <ul class="list-group mt-2 scrollable-list">
                             @if (count($subjects)!=0)
                                 
+                                
                                 @foreach ($subjects as $subject)
                                     <li class="list-group-item ">
+                                        
                                         <input class="form-check-input me-1" type="checkbox" name="checkid[]" value="{{ $subject->id }}" id="Checkbox{{ $subject->id }}">
                                         <label class="form-check-label scrollable-label" for="Checkbox{{ $subject->id }}">{{ $subject->sub_title }}</label>
                                     </li>
@@ -59,7 +62,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
                         <form action="{{ route('exam.update.setquestion') }}" method="post">
@@ -88,12 +91,14 @@
                                         @csrf
                                         @method("DELETE")
                                         <input type="hidden" name="search" value="{{ request()->get('search') ?? '' }}">
-                                    <li class="list-group-item ">
-                                        <button type="submit" class="btn btn-danger btn-sm" >
-                                            <i class="fa fa-times"></i> <!-- Font Awesome "X" icon -->
+                                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center flex-grow-1 overflow-hidden" style="max-width: 100%;">
+                                            <span class="badge bg-primary me-2">{{ $loop->iteration }}</span>
+                                            <span class="scrollable-label" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; max-width: 250px;">{{ $question_paper->subject->sub_title }}</span>
+                                        </div>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm ms-2" title="Delete" style="flex-shrink: 0;">
+                                            <i class="fa fa-trash"></i>
                                         </button>
-                                       
-                                        <label class="form-check-label scrollable-label" >{{  $question_paper->subject->sub_title }}</label>
                                     </li>
                                     </form>
                                 @endforeach
@@ -118,7 +123,13 @@
         $(".main-row td:not(:first-child)").click(function () {
             var target = $(this).closest("tr").data("toggle");
             $("#" + target).toggle();
+            
         });
+        // $(".form-check-input").on("click", function() {
+            
+        //     var count = $("form-check-input:checked").length;
+        //     $("#count-selected").text(count + " subjects selected");
+        // });
 
 
         $("div.alert").on("click", function () {
@@ -129,7 +140,6 @@
             $("#subjectList").empty();
         });
         $("#")
-
     });
     </script>
 @endsection

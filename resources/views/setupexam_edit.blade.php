@@ -19,6 +19,7 @@
             <div class="col-sm-6 mb-3 mb-sm-0">
                 <div class="card">
                     <div class="card-body">
+                        
                         <form action="{{ route('exam.editquestion',$paper->id) }}" method="get">
                         <div class="input-group mb-3">  
                            
@@ -81,17 +82,20 @@
                         <ul class="list-group mt-2 scrollable-list">
                             @if (count($question_papers)!=0)
                                 
-                                @foreach ($question_papers as $question_paper)
+                               @foreach ($question_papers as $question_paper)
                                
-                                    <form action="{{ route('exam.update.delete',[$question_paper->id,$paper->id]) }}" method="POST">
+                                    <form action="{{ route('exam.setup.delete',$question_paper->id) }}" method="POST">
                                         @csrf
                                         @method("DELETE")
-                                    <li class="list-group-item ">
-                                        <button type="submit" class="btn btn-danger btn-sm" >
-                                            <i class="fa fa-times"></i> <!-- Font Awesome "X" icon -->
+                                        <input type="hidden" name="search" value="{{ request()->get('search') ?? '' }}">
+                                    <li class="list-group-item d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center flex-grow-1 overflow-hidden" style="max-width: 100%;">
+                                            <span class="badge bg-primary me-2">{{ $loop->iteration }}</span>
+                                            <span class="scrollable-label" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; max-width: 250px;">{{ $question_paper->subject->sub_title }}</span>
+                                        </div>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm ms-2" title="Delete" style="flex-shrink: 0;">
+                                            <i class="fa fa-trash"></i>
                                         </button>
-                                       
-                                        <label class="form-check-label scrollable-label" >{{  $question_paper->subject->sub_title }}</label>
                                     </li>
                                     </form>
                                 @endforeach
@@ -110,21 +114,23 @@
     </div>
     <script>
         $(document).ready(function () {
+        
         $("#checkall").click(function () {
             $('input:checkbox').not(this).prop('checked', this.checked);
+            
         });
         $(".main-row td:not(:first-child)").click(function () {
             var target = $(this).closest("tr").data("toggle");
             $("#" + target).toggle();
-        });
 
+        });
 
         
         $("#subjectList").on("click","button",function(){
             $("#subject_title").val($(this).text());
             $("#subjectList").empty();
         });
-        $("#")
+       
 
     });
     </script>
