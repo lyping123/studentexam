@@ -318,11 +318,13 @@ class examController extends Controller
         $question_paper=question_paper::create([
             "paper_name"=>$request->paper_name,
             "total_question"=>count($exam_question->get()),
+            "random_status"=>0,
         ]);
 
         $insertid=$question_paper->id;
         $exam_question->update([
             "paper_id"=>$insertid,
+
             "status"=>true,
         ]);
         if($exam_question){
