@@ -61,9 +61,8 @@ class DocxController extends Controller
                 question_text($section, ($index + 1) . ". " . $question->subject->sub_title);
             }
             // question_text($section,($index + 1) . ". " . $question->subject->sub_title);
-            foreach($question->subject->questions as $question){
-                // $section->addText("     ".$question->question_title);
-                question_text($section, "     " . $question->question_title);
+            foreach($question->subject->questions as $subQuestion){
+                question_text($section, "     " . $subQuestion->question_title);
             }
             
             $section->addTextBreak(); // Add spacing
@@ -72,6 +71,7 @@ class DocxController extends Controller
         $filePath = storage_path("app/public/".$papername.".docx");
         $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save($filePath);
+        unset($phpWord); // free memory
 
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
