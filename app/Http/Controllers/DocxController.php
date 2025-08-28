@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\TemplateProcessor;
+use PhpOffice\PhpWord\SimpleType\Jc;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocxController extends Controller
@@ -75,38 +76,32 @@ class DocxController extends Controller
         $phpWord->addTableStyle('Answer Table', $tableStyle);
         $table = $section->addTable('Answer Table');
 
-        $table->addRow();
-        // Create a 10x4 table for answers (10 rows, 4 columns per row = 40 cells)
         $cellWidth = 1500;
         $cellHeight = 400;
-
-        // Add header row
-        $table->addRow();
-        for ($col = 0; $col < 4; $col++) {
-            $table->addCell($cellWidth, ['valign' => 'center'])->addText('Q.No', ['bold' => true]);
-            $table->addCell($cellWidth, ['valign' => 'center'])->addText('Answer', ['bold' => true]);
-        }
 
         $questionCount = $question_paper->exam_question->count();
         $index = 0;
 
         for ($row = 0; $row < 10; $row++) {
-            $table->addRow();
+            $table->addRow($cellHeight);
+
             for ($col = 0; $col < 4; $col++) {
                 if ($index < $questionCount) {
+                    // Question number cell
                     $table->addCell($cellWidth, [
                         'valign' => 'center',
                         'width' => $cellWidth,
                         'height' => $cellHeight
-                    ])->addText($index + 1, [], ['spaceAfter' => 0]);
-                    $answer = isset($question_paper->exam_question[$index]->subject->correct_ans) ? $question_paper->exam_question[$index]->subject->correct_ans : '';
+                    ])->addText(($index + 1) . '.', ['bold' => true], ['alignment' => Jc::CENTER]);
+
+                    // Empty answer cell
                     $table->addCell($cellWidth, [
                         'valign' => 'center',
                         'width' => $cellWidth,
                         'height' => $cellHeight
-                    ])->addText($answer, [], ['spaceAfter' => 0]);
+                    ]);
                 } else {
-                    // Empty cells if less than 40 questions
+                    // Add empty cells if no more questions
                     $table->addCell($cellWidth, [
                         'valign' => 'center',
                         'width' => $cellWidth,
