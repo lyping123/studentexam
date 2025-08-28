@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\TemplateProcessor;
-use PhpOffice\PhpWord\SimpleType\Jc;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocxController extends Controller
@@ -76,50 +75,19 @@ class DocxController extends Controller
         $phpWord->addTableStyle('Answer Table', $tableStyle);
         $table = $section->addTable('Answer Table');
 
-        $cellWidth = 1500;
-        $cellHeight = 400;
+        $table->addRow();
+        $table->addCell(2000)->addText('Q.No', ['bold' => true]);
+        $table->addCell(4000)->addText('Answer', ['bold' => true]);
 
-        $questionCount = $question_paper->exam_question->count();
-        $index = 0;
-
-        for ($row = 0; $row < 10; $row++) {
-            $table->addRow($cellHeight);
-
-            for ($col = 0; $col < 4; $col++) {
-                if ($index < $questionCount) {
-                    // Question number cell
-                    $table->addCell($cellWidth, [
-                        'valign' => 'center',
-                        'width' => $cellWidth,
-                        'height' => $cellHeight
-                    ])->addText(($index + 1) . '.', ['bold' => true], ['alignment' => Jc::CENTER]);
-
-                    // Empty answer cell
-                    $table->addCell($cellWidth, [
-                        'valign' => 'center',
-                        'width' => $cellWidth,
-                        'height' => $cellHeight
-                    ]);
-                } else {
-                    // Add empty cells if no more questions
-                    $table->addCell($cellWidth, [
-                        'valign' => 'center',
-                        'width' => $cellWidth,
-                        'height' => $cellHeight
-                    ]);
-                    $table->addCell($cellWidth, [
-                        'valign' => 'center',
-                        'width' => $cellWidth,
-                        'height' => $cellHeight
-                    ]);
-                }
-                $index++;
-            }
+        foreach ($question_paper->exam_question as $index => $question) {
+            $table->addRow();
+            $table->addCell(2000)->addText($index + 1);
+            $answer = isset($question->subject->correct_ans) ? $question->subject->correct_ans : '';
+            $table->addCell(4000)->addText($answer);
         }
-
         $section->addTextBreak();
-        $papername = $question_paper->paper_name;
-        $filePath = storage_path("app/public/" . $papername . ".docx");
+        $papername= $question_paper->paper_name;
+        $filePath = storage_path("app/public/".$papername.".docx");
         $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save($filePath);
         unset($phpWord); // free memory
@@ -167,30 +135,11 @@ class DocxController extends Controller
             }
             $questionText .= "\n"; // Add spacing between questions
         }
-        // Build a 10x4 answer table as a tab-separated string
-        $answerTable = "";
-        // Add header row (4 sets of Q.No and Answer)
-        for ($col = 0; $col < 4; $col++) {
-            $answerTable .= "Q.No\tAnswer\t";
+        $answerTable = "Q.No\tAnswer\n";
+        foreach ($question_paper->exam_question as $index => $question) {
+            $answer = isset($question->subject->correct_ans) ? $question->subject->correct_ans : '';
+            $answerTable .= ($index + 1) . "\t" . $answer . "\n";
         }
-        $answerTable = rtrim($answerTable, "\t") . "\n";
-
-        $questionCount = $question_paper->exam_question->count();
-        $index = 0;
-
-        for ($row = 0; $row < 10; $row++) {
-            for ($col = 0; $col < 4; $col++) {
-            if ($index < $questionCount) {
-                $answer = isset($question_paper->exam_question[$index]->subject->correct_ans) ? $question_paper->exam_question[$index]->subject->correct_ans : '';
-                $answerTable .= ($index + 1) . "\t" . $answer . "\t";
-            } else {
-                $answerTable .= "\t\t";
-            }
-            $index++;
-            }
-            $answerTable = rtrim($answerTable, "\t") . "\n";
-        }
-
         $templateProcessor->setValue('answer_table', $answerTable);
 
         
