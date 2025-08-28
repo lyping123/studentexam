@@ -67,6 +67,25 @@ class DocxController extends Controller
             
             $section->addTextBreak(); // Add spacing
         }
+        $tableStyle = [
+            'borderSize' => 6,
+            'borderColor' => '999999',
+            'cellMargin' => 80
+        ];
+        $phpWord->addTableStyle('Answer Table', $tableStyle);
+        $table = $section->addTable('Answer Table');
+
+        $table->addRow();
+        $table->addCell(2000)->addText('Q.No', ['bold' => true]);
+        $table->addCell(4000)->addText('Answer', ['bold' => true]);
+
+        foreach ($question_paper->exam_question as $index => $question) {
+            $table->addRow();
+            $table->addCell(2000)->addText($index + 1);
+            $answer = isset($question->subject->correct_ans) ? $question->subject->correct_ans : '';
+            $table->addCell(4000)->addText($answer);
+        }
+        $section->addTextBreak();
         $papername= $question_paper->paper_name;
         $filePath = storage_path("app/public/".$papername.".docx");
         $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
@@ -116,6 +135,14 @@ class DocxController extends Controller
             }
             $questionText .= "\n"; // Add spacing between questions
         }
+        $answerTable = "Q.No\tAnswer\n";
+        foreach ($question_paper->exam_question as $index => $question) {
+            $answer = isset($question->subject->correct_ans) ? $question->subject->correct_ans : '';
+            $answerTable .= ($index + 1) . "\t" . $answer . "\n";
+        }
+        $templateProcessor->setValue('answer_table', $answerTable);
+
+        
 
         $templateProcessor->setValue('questions', $questionText);
 
