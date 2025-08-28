@@ -76,18 +76,55 @@ class DocxController extends Controller
         $table = $section->addTable('Answer Table');
 
         $table->addRow();
-        $table->addCell(2000)->addText('Q.No', ['bold' => true]);
-        $table->addCell(4000)->addText('Answer', ['bold' => true]);
+        // Create a 10x4 table for answers (10 rows, 4 columns per row = 40 cells)
+        $cellWidth = 1500;
+        $cellHeight = 400;
 
-        foreach ($question_paper->exam_question as $index => $question) {
-            $table->addRow();
-            $table->addCell(2000)->addText($index + 1);
-            $answer = isset($question->subject->correct_ans) ? $question->subject->correct_ans : '';
-            $table->addCell(4000)->addText($answer);
+        // Add header row
+        $table->addRow();
+        for ($col = 0; $col < 4; $col++) {
+            $table->addCell($cellWidth, ['valign' => 'center'])->addText('Q.No', ['bold' => true]);
+            $table->addCell($cellWidth, ['valign' => 'center'])->addText('Answer', ['bold' => true]);
         }
+
+        $questionCount = $question_paper->exam_question->count();
+        $index = 0;
+
+        for ($row = 0; $row < 10; $row++) {
+            $table->addRow();
+            for ($col = 0; $col < 4; $col++) {
+                if ($index < $questionCount) {
+                    $table->addCell($cellWidth, [
+                        'valign' => 'center',
+                        'width' => $cellWidth,
+                        'height' => $cellHeight
+                    ])->addText($index + 1, [], ['spaceAfter' => 0]);
+                    $answer = isset($question_paper->exam_question[$index]->subject->correct_ans) ? $question_paper->exam_question[$index]->subject->correct_ans : '';
+                    $table->addCell($cellWidth, [
+                        'valign' => 'center',
+                        'width' => $cellWidth,
+                        'height' => $cellHeight
+                    ])->addText($answer, [], ['spaceAfter' => 0]);
+                } else {
+                    // Empty cells if less than 40 questions
+                    $table->addCell($cellWidth, [
+                        'valign' => 'center',
+                        'width' => $cellWidth,
+                        'height' => $cellHeight
+                    ]);
+                    $table->addCell($cellWidth, [
+                        'valign' => 'center',
+                        'width' => $cellWidth,
+                        'height' => $cellHeight
+                    ]);
+                }
+                $index++;
+            }
+        }
+
         $section->addTextBreak();
-        $papername= $question_paper->paper_name;
-        $filePath = storage_path("app/public/".$papername.".docx");
+        $papername = $question_paper->paper_name;
+        $filePath = storage_path("app/public/" . $papername . ".docx");
         $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save($filePath);
         unset($phpWord); // free memory
@@ -135,11 +172,30 @@ class DocxController extends Controller
             }
             $questionText .= "\n"; // Add spacing between questions
         }
-        $answerTable = "Q.No\tAnswer\n";
-        foreach ($question_paper->exam_question as $index => $question) {
-            $answer = isset($question->subject->correct_ans) ? $question->subject->correct_ans : '';
-            $answerTable .= ($index + 1) . "\t" . $answer . "\n";
+        // Build a 10x4 answer table as a tab-separated string
+        $answerTable = "";
+        // Add header row (4 sets of Q.No and Answer)
+        for ($col = 0; $col < 4; $col++) {
+            $answerTable .= "Q.No\tAnswer\t";
         }
+        $answerTable = rtrim($answerTable, "\t") . "\n";
+
+        $questionCount = $question_paper->exam_question->count();
+        $index = 0;
+
+        for ($row = 0; $row < 10; $row++) {
+            for ($col = 0; $col < 4; $col++) {
+            if ($index < $questionCount) {
+                $answer = isset($question_paper->exam_question[$index]->subject->correct_ans) ? $question_paper->exam_question[$index]->subject->correct_ans : '';
+                $answerTable .= ($index + 1) . "\t" . $answer . "\t";
+            } else {
+                $answerTable .= "\t\t";
+            }
+            $index++;
+            }
+            $answerTable = rtrim($answerTable, "\t") . "\n";
+        }
+
         $templateProcessor->setValue('answer_table', $answerTable);
 
         
