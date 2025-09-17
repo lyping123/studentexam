@@ -421,7 +421,9 @@ class examController extends Controller
             
             
             foreach($exams as $exam){
-                $checkrepeartedsubject=subject::where("sub_title",$exam["question"])->where("user_id",Auth::id());
+                $checkrepeartedsubject = subject::where("sub_title", $exam["question"])
+                    ->where("user_id", Auth::id())
+                    ->exists();
                 if($checkrepeartedsubject){
                     continue;
                 }
