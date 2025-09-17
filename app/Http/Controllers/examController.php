@@ -419,8 +419,12 @@ class examController extends Controller
             $subjectids=array();
             
             
-        
+            
             foreach($exams as $exam){
+                $checkrepeartedsubject=subject::where("sub_title",$exam["question"])->where("user_id",Auth::id());
+                if($checkrepeartedsubject){
+                    continue;
+                }
                 $subject=subject::create([
                     'user_id'=>Auth::id(),
                     'sub_title'=>$exam['question'],

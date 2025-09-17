@@ -25,7 +25,6 @@ class subject extends Model
         return $query;
     }
     
-
     public function questions(){
         return $this->hasMany(question::class);
     }
