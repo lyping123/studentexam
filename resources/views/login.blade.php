@@ -10,8 +10,8 @@
                 <form action="{{ route('user.login') }}" method="post">
                     @csrf
                     <div class="mb-3">
-                        <label for="autherticate" class="form-label">Email/IC</label>
-                        <input type="text" name="autherticate" id="autherticate" class="form-control" value="{{ old('autherticate') }}">
+                        <label for="autherticate" class="form-label">Full Name</label>
+                        <input type="text" name="autherticate" id="autherticate" placeholder="eg. John Doe" class="form-control" value="{{ old('autherticate') }}">
                         @error('autherticate')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
