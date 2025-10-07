@@ -110,7 +110,7 @@ class demoExamController extends Controller
         
         $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))
             ->whereIn("student_id", $studentGroup->pluck('student_id'))
-            ->get();
+            ->paginate(10);
         
         $s_name=request()->only('student');
         
@@ -145,7 +145,6 @@ class demoExamController extends Controller
                 })
                 ->count();
             $attempt->correct_answers = $correctCount ? $correctCount : 0;
-            
         }
         
         return view("examReviewList",compact("examAttenpts","question_papers","calendar_modes"));

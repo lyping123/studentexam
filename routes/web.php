@@ -56,7 +56,7 @@ Route::middleware(['role:admin'])->group(function(){
         Route::delete("/delete/{exam_question}/exam/",[examController::class,'deletesetup'])->name("exam.setup.delete");
         Route::delete("deletesetexam/{question_paper}/exam",[examController::class,'deletesetexam'])->name("exam.set.delete");
         Route::delete("/delete/updateexam/{question_paper}",[examController::class,"deleteupdateAll"])->name("exam.update.deleteAll");
-        Route::delete("/delete/exam/{exam_question}/{question_paper}",[examController::class,'deleteupdate'])->name("exam.update.delete");
+        Route::delete("/delete/exam/{exam_question}",[examController::class,'deleteupdate'])->name("exam.update.delete");
         
 
         Route::get("/demoquestion/{question_paper}",[demoExamController::class,"index"])->name("demoexam.index");

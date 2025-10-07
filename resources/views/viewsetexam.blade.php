@@ -71,6 +71,9 @@
                     @endif
                 </tbody>
             </table>
+            <div class="flex justify-center">
+                        {{ $question_papers->links('pagination::bootstrap-5') }}
+                    </div>
             <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">

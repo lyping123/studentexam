@@ -84,10 +84,11 @@
                                 
                                @foreach ($question_papers as $question_paper)
                                
-                                    <form action="{{ route('exam.setup.delete',$question_paper->id) }}" method="POST">
+                                    <form action="{{ route('exam.update.delete',$question_paper->id) }}" method="POST">
                                         @csrf
                                         @method("DELETE")
                                         <input type="hidden" name="search" value="{{ request()->get('search') ?? '' }}">
+                                        
                                     <li class="list-group-item d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center flex-grow-1 overflow-hidden" style="max-width: 100%;">
                                             <span class="badge bg-primary me-2">{{ $loop->iteration }}</span>

@@ -19,7 +19,7 @@ class exam_question extends Model
     }
 
     public function question_paper(){
-        return $this->belongsTo(question_paper::class);
+        return $this->belongsTo(question_paper::class,"paper_id","id");
     }
 
     public static function booted(){

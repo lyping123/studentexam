@@ -360,20 +360,23 @@ class examController extends Controller
     {
         $exam_question->delete();
         $search = request()->input("search") ?? "";
+
         if ($search) {
             return redirect()->route("exam.stuquestiton", ['search' => $search])->with("success", "exam question deleted success");
         }
         return redirect()->route("exam.stuquestiton")->with("success","exam question deleted success");
     }
 
-    public function deleteupdate(exam_question $exam_question,question_paper $question_paper)
+    public function deleteupdate(exam_question $exam_question)
     {
-        $exam_question->delete();
+
+        $exam_question->delete();    
+        // dd($exam_question->question_paper);
         $search = request()->input("search") ?? "";
         if ($search) {
             return redirect()->route("exam.stuquestiton", ['search' => $search])->with("success", "exam question deleted success");
         }
-        return redirect()->route("exam.editquestion",$question_paper->id)->with("success","exam question deleted success");
+        return redirect()->route("exam.editquestion",$exam_question->question_paper->id)->with("success","exam question deleted success");
     }
 
     public function deletesetexam(question_paper $question_paper){
@@ -383,8 +386,11 @@ class examController extends Controller
 
     public function viewsetquestionPage()
     {
-        $question_papers=question_paper::all();
-        return view("viewsetexam",compact("question_papers"));
+        $question_papers = question_paper::paginate(10);
+        $question_papers->map(function ($question_paper) {
+            $question_paper->total_question = exam_question::where("paper_id", $question_paper->id)->count();
+        });
+        return view("viewsetexam", compact("question_papers"));
     }
 
     

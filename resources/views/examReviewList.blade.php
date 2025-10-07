@@ -192,7 +192,11 @@
                         @endforeach
                     </tbody>
                 </table>
+                
             </div>
+            <div class="flex justify-center">
+                        {{ $examAttenpts->links('pagination::bootstrap-5') }}
+                    </div>
         </div>
     </div>
     <script>
