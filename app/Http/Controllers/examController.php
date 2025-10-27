@@ -39,7 +39,6 @@ class examController extends Controller
             $subject_title=subject_title::create([
                 'subject_name'=>$request->subject_title
             ]);
-            
         }
 
         $subbtitlei_id=$subject_title->id;
@@ -206,11 +205,11 @@ class examController extends Controller
     public function index(Request $request)
     {
         $subject_titles=subject_title::all();
+        // $subjects_title=subject::all()->groupBy('subject_id');
+        
+
         $search=$request->input("search");
         $subjects=subject::filter($search)->latest()->paginate(10);
-        // dd($subjects->subject_title);
-        // $subject_title=subject::find(1);
-        // dd($subject_title->subject_title);
         return view('index',compact('subjects','subject_titles'));
     }
 
@@ -226,6 +225,7 @@ class examController extends Controller
 
     public function saveQuestionPaperSetting(Request $request,$id){
         $formvalidated=$request->validate([
+            "start_datetime"=>"required",
             "limit_submit_per_day"=>"required|boolean",
             "time_limit"=>"required|numeric",
             "random_status"=>"required|boolean",
@@ -256,11 +256,9 @@ class examController extends Controller
         $exam_question=$question_paper->exam_question();
         $question_paper->update([
             "paper_name"=>$request->paper_name,
-            "total_question"=>count($exam_question->get()),
         ]);
 
         $exam_question->update([
-            
             "status"=>true,
         ]);
 
@@ -317,14 +315,12 @@ class examController extends Controller
 
         $question_paper=question_paper::create([
             "paper_name"=>$request->paper_name,
-            "total_question"=>count($exam_question->get()),
             "random_status"=>0,
         ]);
 
         $insertid=$question_paper->id;
         $exam_question->update([
             "paper_id"=>$insertid,
-
             "status"=>true,
         ]);
         if($exam_question){
@@ -411,7 +407,6 @@ class examController extends Controller
         }
         $subbtitlei_id=$subject_title->id;
 
-        
         if($request->hasFile('jsonFile')){
             $jsonFile = $request->file('jsonFile');
             $jsonData = file_get_contents($jsonFile->getPathname());
@@ -483,9 +478,7 @@ class examController extends Controller
     
     public function delete(request $request)
     {
-
         $deleterow=$request->input('checkid');
-        
         foreach($deleterow as $deleterowid){
 
             $subject=subject::find($deleterowid);

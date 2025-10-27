@@ -53,10 +53,7 @@ class studentController extends Controller
         //     "password" => $request->password,
         //     "role"=>$role,
         // ]);
-        
-        
         $students=$request->studentNames;
-        
         $group=User::where("name",$request->groups)->first();
 
         
@@ -83,17 +80,17 @@ class studentController extends Controller
     {
         $search=$request->input("name");
         $groupstudent=student::filter($search)->get();
+        if($request->has("name")){
+            $groupstudent=student::withoutGlobalScope('user')->filter($search)->get();
+        }
         
         foreach($groupstudent as $group){
             $students=User::find($group->student_id);
             $group->user=$students;
         }
-        
         // dd($groupstudent);
         // $students=User::where("role","student")->get();        
         $groupName=User::where("role","admin")->get();
-
-
         return view("studentList",compact("groupstudent","groupName"));
     }
 
@@ -101,7 +98,7 @@ class studentController extends Controller
     {
         $formValidated=$request->validate([
             "name"=>"required|unique:users,name",
-            "password"=>"required|confirmed"
+            "password"=>"required|confirmed|min:8",
         ]);
         
         $user=User::create($formValidated);

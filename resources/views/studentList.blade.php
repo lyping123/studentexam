@@ -80,7 +80,7 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Student Name</label>
-                                <input type="text" class="form-control" id="s_name" name="name" />
+                                <input type="text" class="form-control" id="s_name" name="name" value="{{ old('name') }}" />
                             </div>
                             
                             <div class="mb-3">

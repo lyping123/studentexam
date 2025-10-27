@@ -50,17 +50,15 @@ class demoExamController extends Controller
             'answers.*' => 'required'
         ]);
 
-        
         $question_paper=question_paper::find($request->paper_id);
 
         if($question_paper->limit_submit_per_day){
             $existingAttempt = ExamAttempt::where('student_id', Auth::id())
             ->where('paper_id', $request->paper_id)
-            ->whereDate('created_at', Carbon::today())
             ->exists();
             
             if ($existingAttempt) {
-                return redirect()->back()->withErrors('You have already submitted this exam today.');
+                return redirect()->back()->withErrors('You have already submitted this exam.');
             }
         }
         $examAttenpt=ExamAttempt::create([
@@ -107,10 +105,10 @@ class demoExamController extends Controller
         $question_papers=question_paper::all();
         $studentGroup = student::all();
         
-        
-        $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))
+        $filters = request()->only(['student', 'question_paper', 'month']);
+        $examAttenpts = ExamAttempt::filter($filters)
             ->whereIn("student_id", $studentGroup->pluck('student_id'))
-            ->paginate(10);
+            ->paginate(10)->appends($filters);
         
         $s_name=request()->only('student');
         

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class question_paper extends Model
 {
-    protected $fillable=["paper_name","total_question","limit_submit","limit_submit_per_day","random_status","time_limit","status"];
+    protected $fillable=["paper_name","start_datetime","limit_submit","limit_submit_per_day","random_status","time_limit","status"];
     
     public function exam_question(){
         return $this->hasMany(exam_question::class,"paper_id");
@@ -31,4 +31,10 @@ class question_paper extends Model
             }
         });
     }
+
+    protected $casts = [
+        'start_datetime' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 }

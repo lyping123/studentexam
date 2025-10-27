@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('question_papers', function (Blueprint $table) {
             $table->id();
             $table->string("paper_name");
-            $table->integer("total_question");
+            $table->timestamp("start_datetime")->nullable();
             $table->boolean("limit_submit_per_day")->default(0);
             $table->integer("time_limit")->nullable();
             $table->boolean("random_status")->default(1);

@@ -53,7 +53,7 @@
                                 
                             @else
                             <li class="list-group">
-                                <p>None question found</p>
+                                <p>Please choose subject title to import question</p>
                             </li>
                             @endif
                             

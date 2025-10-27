@@ -22,7 +22,7 @@ class subject extends Model
         if(!empty($search)){
             return $query->where('subject_id',$search);
         }
-        return $query;
+        return $query->where("id",0);
     }
     
     public function questions(){

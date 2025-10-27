@@ -11,12 +11,11 @@
                     <tr>
                         <th>Paper name</th>
                         <th>Total question</th>
-                        {{-- <th>Course</th> --}}
-                        <th>limit submit per day</th>
+                        <th>limit submit</th>
+                        <th>Start DateTime</th>
                         <th>Time limit(minutes)</th>
                         <th>Random status</th>
                         <th>Status</th>
-                        {{-- <th>User created</th> --}}
                         <th>created Date</th>
                         <th colspan="3">Action</th>
                     </tr>
@@ -31,8 +30,8 @@
                             <tr>
                                 <td>{{ $question_paper->paper_name }}</td>
                                 <td>{{ $question_paper->total_question }}</td>
-                                
                                 <td>{{ $question_paper->limit_submit_per_day==1 ? "yes":"no" }}</td>
+                                <td>{{ $question_paper->start_datetime->format("d-m-Y H:i") }}</td>
                                 <td>{{ $question_paper->time_limit }}</td>
                                 <td>{{ $question_paper->random_status==1 ? "yes":"no" }}</td>
                                 <td>{{ $question_paper->status==1 ? "Active":"Inactive" }}</td>
@@ -86,7 +85,7 @@
                             <form id="editForm" method="POST">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="limit_submit" class="form-label">Limit Submit per Day</label>
+                                    <label for="limit_submit" class="form-label">Limit Submit</label>
                                     <div class="mb-3">
                                         <input type="radio" id="limit_1" name="limit_submit_per_day" value="1" required>
                                         <label for="limit_1">Yes</label>
@@ -94,7 +93,10 @@
                                         <label for="limit_2">No</label>
                                     </div>
                                 </div>
-                                
+                                <div class="mb-3">
+                                    <label for="start_datetime" class="form-label">Start Datetime</label>
+                                    <input type="datetime-local" class="form-control" id="start_datetime" name="start_datetime"  required>
+                                </div>
                                 <div class="mb-3">
                                     <label for="time_limit" class="form-label">Time Limit (in minutes)</label>
                                     <input type="number" class="form-control" id="time_limit" name="time_limit" required>
@@ -176,7 +178,7 @@
                 $("#editForm").attr("action", `{{ route('exam.setting.save',':paper_id') }}`.replace(':paper_id',id));
                 let paper_data=data.data;
                 $("#time_limit").val(paper_data.time_limit);
-               
+                $("#start_datetime").val(paper_data.start_datetime.replace(" ","T"));
                 if(paper_data.limit_submit_per_day == 1) {
                     $("#limit_1").attr("checked", true);
                     $("#limit_2").attr("checked", false);
