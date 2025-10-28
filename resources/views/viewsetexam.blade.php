@@ -31,12 +31,12 @@
                                 <td>{{ $question_paper->paper_name }}</td>
                                 <td>{{ $question_paper->total_question }}</td>
                                 <td>{{ $question_paper->limit_submit_per_day==1 ? "yes":"no" }}</td>
-                                <td>{{ $question_paper->start_datetime->format("d-m-Y H:i") ?? 'none start datetime' }}</td>
+                                <td>{{ ($question_paper->start_datetime!="")?$question_paper->start_datetime->format("d-m-Y H:i"):"N/A" }}</td>
                                 <td>{{ $question_paper->time_limit }}</td>
                                 <td>{{ $question_paper->random_status==1 ? "yes":"no" }}</td>
                                 <td>{{ $question_paper->status==1 ? "Active":"Inactive" }}</td>
                                 
-                                {{-- <td>{{ $question_paper->exam_question->first()->user->name }}</td> --}}
+                                <td>{{ $question_paper->created_at->format("d-m-Y") }}</td>
                                 <td>{{ $question_paper->created_at->format("d-m-Y") }}</td>
                                 <td style="display: flex;">
                                     <a href="{{ route('demoexam.index', $question_paper->id) }} " target='_blank' class="btn btn-secondary btn-sm"><i class="bi bi-reply-fill"></i>
