@@ -53,6 +53,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('user.showlog') }}">User log</a>
                 </li>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('student.exam.history') }}">Exam history</a>
+                    </li>
                 @endif
                 
                 

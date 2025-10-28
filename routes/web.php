@@ -79,6 +79,7 @@ Route::middleware(['role:student'])->group(function () {
         Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
         Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review");
         Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("student.demoexam.review.list");
+        Route::get("exam/history",[studentController::class,'examHistory'])->name("student.exam.history");
     });
     
 });

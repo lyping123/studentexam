@@ -8,30 +8,52 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let duration = sessionStorage.getItem('remainingTime') 
-            ? parseInt(sessionStorage.getItem('remainingTime')) 
-            : {{ $question_paper->time_limit??10 }} * 60;
+            const paperId = {{ $question_paper->id }};
+            const durationMinutes = {{ (int) $question_paper->time_limit }};
+
+            @php
+                $startIso = ($question_paper->start_datetime instanceof \Carbon\Carbon)
+                    ? $question_paper->start_datetime->toIso8601String()
+                    : \Carbon\Carbon::parse($question_paper->start_datetime)->toIso8601String();
+            @endphp
+
+            const startIso = '{{ $startIso }}';               // e.g. 2025-10-27T12:30:00+00:00
+            const startMs  = Date.parse(startIso);            // milliseconds
+            let endMs = Number(sessionStorage.getItem('exam_end_' + {{ $question_paper->id }}));
+
+            // Persist a stable end time per paper in this tab session
+            if (!endMs || Number.isNaN(endMs)) {
+                endMs = startMs + durationMinutes * 60 * 1000; // minutes -> ms
+                sessionStorage.setItem('exam_end_' + {{ $question_paper->id }}, String(endMs));
+            }
 
             const timerElement = document.getElementById('time');
+            let timerInterval = null;
 
-            function updateTimer() {
-            const minutes = Math.floor(duration / 60);
-            const seconds = duration % 60;
-            timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            sessionStorage.setItem('remainingTime', duration);
-
-            if (duration > 0) {
-                duration--;
-            } else {
-                clearInterval(timerInterval);
-                alert('Time is up!');
-                sessionStorage.removeItem('remainingTime');
-                document.querySelector('form').submit();
-            }
+            function render(seconds) {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                timerElement.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
             }
 
-            const timerInterval = setInterval(updateTimer, 1000);
-            updateTimer();
+            function tick() {
+                const now = Date.now();
+                // If not started yet, show 00:00 until start (you can change this to a “starts in” countdown)
+                const effectiveNow = Math.max(now, startMs);
+                const remainingSec = Math.max(0, Math.floor((endMs - effectiveNow) / 1000));
+
+                render(remainingSec);
+
+                if (remainingSec <= 0) {
+                    clearInterval(timerInterval);
+                    sessionStorage.removeItem('exam_end_' + {{ $question_paper->id }});
+                    alert('Time is up!');
+                    document.querySelector('form').submit();
+                }
+            }
+
+            timerInterval = setInterval(tick, 1000);
+            tick();
         });
     </script>
     <h2 class="text-center">Student Exam</h2>

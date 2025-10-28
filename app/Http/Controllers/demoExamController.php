@@ -24,7 +24,6 @@ class demoExamController extends Controller
             $exam_questions = $question_paper->exam_question()->get();
         }
         
-        
         return view('demoExam',compact("exam_questions","question_paper"));
     }
 
@@ -33,13 +32,17 @@ class demoExamController extends Controller
         
         $decryptedId = Crypt::decrypt($question_paper);
         $question_paper=question_paper::find($decryptedId);
+        $datentimenow=Carbon::now();
+        $start_datetime=$question_paper->start_datetime;
+        if($datentimenow < $start_datetime){
+            return redirect()->route('student.dashboard')->withErrors("Exam not started yet. Please come back after ".$question_paper->start_datetime);
+        }
+
         if($question_paper->random_status==1){
             $exam_questions = $question_paper->exam_question()->inRandomOrder()->limit(60)->get();
         }else{
             $exam_questions = $question_paper->exam_question()->get();
         }
-        
-        // $exam_questions = $question_paper->exam_question()->get();
         return view('demoExam',compact("exam_questions","question_paper"));
     }
 
@@ -76,9 +79,7 @@ class demoExamController extends Controller
                 'attempt_id'=> $attenpt_id,
                 'answer' => $answer
             ]);
-        }
-
-        
+        }   
         return redirect()->route('demoexam.review', $attenpt_id)->with('success', 'Exam submitted successfully!');
     }
 
@@ -89,6 +90,7 @@ class demoExamController extends Controller
         $exam_questions=$ExamAttempt->question_paper->exam_question()->get();
         // dd($exam_questions=$ExamAttempt->question_paper);
         $question_paper=$ExamAttempt->question_paper()->get();
+        $total_questions=$exam_questions->count();
         // dd($question_paper);
         $studentAnswers=StudentAnswer::where("attempt_id",$attenpt_id)->pluck('answer',"subject_id");
         $correctAnswersCount=StudentAnswer::where('attempt_id', $attenpt_id)
@@ -97,7 +99,7 @@ class demoExamController extends Controller
             })
             ->count();
         
-        return view("examReview",compact("studentAnswers","question_paper","exam_questions","correctAnswersCount"));
+        return view("examReview",compact("studentAnswers","question_paper","exam_questions","correctAnswersCount","total_questions"));
     }
 
     public function examReviewlist()

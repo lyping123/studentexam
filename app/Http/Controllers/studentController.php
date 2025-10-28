@@ -18,7 +18,7 @@ class studentController extends Controller
      */
     public function index()
     {
-        $examAttenpts=ExamAttempt::where("student_id",Auth::id())->get();
+        $examAttenpts=ExamAttempt::where("student_id",Auth::id())->latest()->take(10)->get();
 
         foreach ($examAttenpts as $attempt) {
             $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
@@ -32,8 +32,14 @@ class studentController extends Controller
         
         $upcomingExams=question_paper::where("status",1)->whereHas("exam_question",function($query){
             $studentGroup=student::where("student_id",Auth::id())->first();
-            $query->where("user_id",$studentGroup->user_id);  
-        })->latest()->take(5)->get();
+            $query->where("user_id",$studentGroup->user_id); 
+        })->latest()->take(10)->get();
+
+        $upcomingExams->each(function ($exam) {
+            $exam->total_question = $exam->exam_question()->count();
+        });
+
+        // dd($upcomingExams);
         
         return view('student_dashboard',compact("examAttenpts","upcomingExams"));
     }
@@ -74,6 +80,23 @@ class studentController extends Controller
         // ]);
         return response()->json($group, 201);
 
+    }
+
+    public function examHistory()
+    {
+        $examAttenpts=ExamAttempt::where("student_id",Auth::id())->latest()->get();
+        $question_papers=question_paper::all();
+
+        foreach ($examAttenpts as $attempt) {
+            $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
+                ->whereHas('subject', function ($query) {
+                    $query->whereColumn('student_answers.answer', 'subjects.correct_ans')->withoutGlobalScopes();
+                })
+                ->count();
+            $attempt->correct_answers = $correctCount ? $correctCount : 0;  
+        }
+        
+        return view("studentHistory",compact("examAttenpts","question_papers"));
     }
 
     public function studentListPage(Request $request)

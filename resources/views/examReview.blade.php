@@ -6,9 +6,9 @@
     <div class="bg-light text-center p-4 rounded shadow-sm">
         <h4 class="mb-3">Exam Summary</h4>
         <p class="mb-1">You have completed the exam. Below is a summary of your performance:</p>
-        <div class="d-flex justify-content-center mt-3">
+        <div class="d-flex justify-content-center mt-3 space-x-4">
             <div class="me-4">
-                <h5 class="text-primary mb-0">{{ $question_paper->first()->total_question }}</h5>
+                <h5 class="text-primary mb-0">{{ $total_questions }}</h5>
                 <small>Total Questions</small>
             </div>
             <div class="me-4">
@@ -16,8 +16,12 @@
                 <small>Correct Answers</small>
             </div>
             <div>
-                <h5 class="text-danger mb-0">{{ $question_paper->first()->total_question - $correctAnswersCount }}</h5>
+                <h5 class="text-danger mb-0">{{ $total_questions - $correctAnswersCount }}</h5>
                 <small>Wrong Answers</small>
+            </div>
+            <div class="ms-4">
+                <h5 class="text-info mb-0">{{ round(($correctAnswersCount / max(1,$total_questions)) * 100, 2) }}%</h5>
+                <small>Score Percentage</small>
             </div>
         </div>
     </div>

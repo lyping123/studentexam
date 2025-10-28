@@ -104,9 +104,9 @@
                                 <div class="mb-3">
                                     <label for="paper_name" class="form-label">Random question</label>
                                     <br>
-                                    <input type="radio" id="paper_name" name="random_status" value="1" required>
+                                    <input type="radio" name="random_status" value="1" required>
                                     <label for="paper_name">Yes</label>
-                                    <input type="radio" id="paper_name" name="random_status" value="0" required>
+                                    <input type="radio"  name="random_status" value="0" required>
                                     <label for="paper_name">No</label>
 
                                 </div>
@@ -178,7 +178,19 @@
                 $("#editForm").attr("action", `{{ route('exam.setting.save',':paper_id') }}`.replace(':paper_id',id));
                 let paper_data=data.data;
                 $("#time_limit").val(paper_data.time_limit);
-                $("#start_datetime").val(paper_data.start_datetime.replace(" ","T"));
+                // Format value for <input type="datetime-local">
+                const toLocalDatetimeInput = (val) => {
+                    if (!val) return '';
+                    const normalized = String(val).replace(' ', 'T'); // handle "YYYY-MM-DD HH:MM:SS"
+                    const d = new Date(normalized);
+                    if (isNaN(d)) {
+                        // Fallback: trim to "YYYY-MM-DDTHH:MM"
+                        return normalized.slice(0, 16);
+                    }
+                    const pad = n => String(n).padStart(2, '0');
+                    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+                };
+                $("#start_datetime").val(toLocalDatetimeInput(paper_data.start_datetime));
                 if(paper_data.limit_submit_per_day == 1) {
                     $("#limit_1").attr("checked", true);
                     $("#limit_2").attr("checked", false);
@@ -189,6 +201,14 @@
                 $("#status option").each(function() {
                     $(this).removeAttr("selected");
                 });
+                $('input[name="random_status"]').each(function() {
+                    $(this).removeAttr("checked");
+                });
+                if(paper_data.random_status == 1) {
+                    $("input[name='random_status'][value='1']").attr("checked", "checked");
+                }else{
+                    $("input[name='random_status'][value='0']").attr("checked", "checked");
+                }
                 if(paper_data.status == 1) {
                     $("#status option[value='1']").attr("selected", "selected");
                 }else{
