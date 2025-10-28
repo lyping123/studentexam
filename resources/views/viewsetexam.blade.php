@@ -37,7 +37,6 @@
                                 <td>{{ $question_paper->status==1 ? "Active":"Inactive" }}</td>
                                 
                                 <td>{{ $question_paper->created_at->format("d-m-Y") }}</td>
-                                <td>{{ $question_paper->created_at->format("d-m-Y") }}</td>
                                 <td style="display: flex;">
                                     <a href="{{ route('demoexam.index', $question_paper->id) }} " target='_blank' class="btn btn-secondary btn-sm"><i class="bi bi-reply-fill"></i>
 
