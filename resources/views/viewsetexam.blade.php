@@ -31,7 +31,7 @@
                                 <td>{{ $question_paper->paper_name }}</td>
                                 <td>{{ $question_paper->total_question }}</td>
                                 <td>{{ $question_paper->limit_submit_per_day==1 ? "yes":"no" }}</td>
-                                <td>{{ $question_paper->start_datetime->format("d-m-Y H:i") }}</td>
+                                <td>{{ $question_paper->start_datetime->format("d-m-Y H:i") ?? 'none start datetime' }}</td>
                                 <td>{{ $question_paper->time_limit }}</td>
                                 <td>{{ $question_paper->random_status==1 ? "yes":"no" }}</td>
                                 <td>{{ $question_paper->status==1 ? "Active":"Inactive" }}</td>
