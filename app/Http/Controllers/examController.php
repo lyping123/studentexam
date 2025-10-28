@@ -460,7 +460,7 @@ class examController extends Controller
 
             ]);
 
-            return redirect()->route('exam.index')->with('success','exam question successfully uploaded');
+            return redirect()->route('exam.index',["page"=>1,"search"=>$subbtitlei_id])->with('success','exam question successfully uploaded');
         }
         return redirect()->route('exam.index')->with('success','File uploaded successfully');
     }
