@@ -92,13 +92,13 @@
                                         <label for="limit_2">No</label>
                                     </div>
                                 </div>
-                                <div class="mb-3">
+                                <div class="mb-3" id="start_datetime_group" style="display:none;">
                                     <label for="start_datetime" class="form-label">Start Datetime</label>
-                                    <input type="datetime-local" class="form-control" id="start_datetime" name="start_datetime"  required>
+                                    <input type="datetime-local" class="form-control" id="start_datetime" name="start_datetime" >
                                 </div>
                                 <div class="mb-3">
                                     <label for="time_limit" class="form-label">Time Limit (in minutes)</label>
-                                    <input type="number" class="form-control" id="time_limit" name="time_limit" required>
+                                    <input type="number" class="form-control" id="time_limit" name="time_limit" >
                                 </div>
                                 <div class="mb-3">
                                     <label for="paper_name" class="form-label">Random question</label>
@@ -191,6 +191,7 @@
                 };
                 $("#start_datetime").val(toLocalDatetimeInput(paper_data.start_datetime));
                 if(paper_data.limit_submit_per_day == 1) {
+                   
                     $("#limit_1").attr("checked", true);
                     $("#limit_2").attr("checked", false);
                 }else {
@@ -221,6 +222,19 @@
             $("#downloadForm").attr("action", `{{ route('pretest.docx',':paper_id') }}`.replace(':paper_id',id));
             $("#downloadId").val(id);
             $("#downloadModal").modal("show");
+        });
+
+        $("#limit_1, #limit_2").change(function() {
+            if($("#limit_1").is(":checked")) {
+                $("#start_datetime_group").show();
+                $("#start_datetime").attr("required", true);
+                $("#time_limit").attr("required", true);
+            } else {
+                $("#start_datetime_group").hide();
+                $("#start_datetime").attr("required", false);
+                $("#start_datetime").val("");
+                $("#time_limit").attr("required", false);
+            }
         });
 
         $("#downloadModal").on("change","input[type='radio']",function(){

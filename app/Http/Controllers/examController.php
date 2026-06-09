@@ -235,12 +235,12 @@ class examController extends Controller
 
     public function saveQuestionPaperSetting(Request $request,$id){
         $formvalidated=$request->validate([
-            "start_datetime"=>"required",
             "limit_submit_per_day"=>"required|boolean",
-            "time_limit"=>"required|numeric",
             "random_status"=>"required|boolean",
             "status"=>"required|boolean"
         ]);
+        $formvalidated["start_datetime"]=$request->input("start_datetime")?? null;
+        $formvalidated["time_limit"]=$request->input("time_limit")?? null;
         $question_paper=question_paper::find($id);
         $question_paper->update($formvalidated);
         return redirect()->route("exam.viewsetquestion")->with("success","exam setting updated success");

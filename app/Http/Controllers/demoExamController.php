@@ -45,13 +45,16 @@ class demoExamController extends Controller
         }
 
         
-        if($datentimenow < $start_datetime){
-            return redirect()->route('student.dashboard')->withErrors("Exam not started yet. Please come back after ".$question_paper->start_datetime);
+        if($question_paper->limit_submit_per_day>0){
+            if($datentimenow < $start_datetime){
+                return redirect()->route('student.dashboard')->withErrors("Exam not started yet. Please come back after ".$question_paper->start_datetime);
+            }
+            $examend_datetime=$question_paper->start_datetime->addMinutes($question_paper->time_limit ?? 0);
+            if($datentimenow > $examend_datetime){
+                return redirect()->route('student.dashboard')->withErrors("Exam time is over. You cannot take the exam now.");
+            }
         }
-        $examend_datetime=$question_paper->start_datetime->addMinutes($question_paper->time_limit ?? 0);
-        if($datentimenow > $examend_datetime){
-            return redirect()->route('student.dashboard')->withErrors("Exam time is over. You cannot take the exam now.");
-        }
+        
 
         if($question_paper->random_status==1){
             $exam_questions = $question_paper->exam_question()->inRandomOrder()->limit(60)->get();

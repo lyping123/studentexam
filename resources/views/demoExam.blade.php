@@ -2,10 +2,11 @@
 
 @section('content')
 <div class="container mt-5">
-    <div id="timer" style=" z-index:1000; position: fixed; top: 60px; right: 20px; background-color: #f8d7da; padding: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-        <strong>Time Left:</strong> <span id="time">00:00</span>
-    </div>
-
+    
+    @if($question_paper->limit_submit_per_day == 1)
+        <div id="timer" style=" z-index:1000; position: fixed; top: 60px; right: 20px; background-color: #f8d7da; padding: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <strong>Time Left:</strong> <span id="time">00:00</span>
+        </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const paperId = {{ $question_paper->id }};
@@ -56,6 +57,7 @@
             tick();
         });
     </script>
+    @endif
     <h2 class="text-center">Student Exam</h2>
 
     <form action="{{ route('demoexam.submit')}}" method="POST">
