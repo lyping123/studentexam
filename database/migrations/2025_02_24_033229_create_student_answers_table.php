@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('answer'); 
             $table->timestamps();
             $table->foreign('student_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('subject_id')->references('subject_id')->on('exam_questions')->onDelete('cascade');
+            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
             $table->foreign('paper_id')->references('id')->on('question_papers')->onDelete('cascade');
         });
     }

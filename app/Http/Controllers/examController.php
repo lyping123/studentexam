@@ -108,8 +108,6 @@ class examController extends Controller
             ]);
             
         }
-
-
         $subbtitlei_id=$subject_title->id;
         $myContent=new stdClass();
 
@@ -122,16 +120,19 @@ class examController extends Controller
                 $file->move(public_path($path), $filename);
                 $myContent->content = $path . "/" . $filename;
             }
+        }else if($request->question_type=="subject"){
+            $myContent->type="subject";
         }
-
-
         $myJson=json_encode($myContent);
+
         $subject->update([
             "sub_title"=>$request->sub_title,
             "correct_ans"=>$request->correct_ans,
+            "question_type"=>$request->question_type,
             "sub_content"=>$myJson,
             "subject_id"=>$subbtitlei_id,
         ]);
+        
         $subject->questions()->delete();
         $options=$request->options;
         $array=array("A","B","C","D");
@@ -142,7 +143,7 @@ class examController extends Controller
                 "subject_id"=>$subject->id,
             ]);
         }
-        return redirect()->route("exam.index")->with("success","question paper edited success");
+        return redirect()->route("exam.index",["search"=>$subbtitlei_id])->with("success","question paper edited success");
 
 
     }
@@ -151,8 +152,17 @@ class examController extends Controller
         $recentStudents = User::where('role', 'student')->latest()->take(5)->get();
         $total_student=User::where('role','student')->count();
         $totalPapers=question_paper::count();
-        // dd(now()->subDay());
-        $examAttenpts=ExamAttempt::where('created_at', '=', now()->subDay())->get();
+        // $tz = config('app.timezone') ?: 'UTC';
+
+        // dd([
+        //     'app_timezone' => $tz,
+        //     'now_app' => now($tz)->toDateTimeString(),
+        //     'yesterday_app_date' => now($tz)->copy()->subDay()->toDateString(),
+        //     'now_utc' => now('UTC')->toDateTimeString(),
+        //     'yesterday_utc_date' => now('UTC')->copy()->subDay()->toDateString(),
+        // ]);
+        // dd(now()->toDateTimeString());
+        $examAttenpts=ExamAttempt::wheredate('created_at', '=', now()->toDateString())->get();
         
         foreach ($examAttenpts as $attempt) {
             $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
@@ -168,19 +178,19 @@ class examController extends Controller
         
         
         $recentStudentsAttenpts->each(function ($student) use ($examAttenpts) {
+            
             $student->examAttempts = $examAttenpts->where("student_id",$student->student_id);
         }); 
-
+        
         $passed=$examAttenpts->where('total_mark','>=',60)->count();
         $failed=$examAttenpts->where('total_mark','<',60)->count();
 
         $xAxis=["Jan"=>0,"Feb"=>0,"Mar"=>0,"Apr"=>0,"May"=>0,"Jun"=>0,"Jul"=>0,"Aug"=>0,"Sep"=>0,"Oct"=>0,"Nov"=>0,"Dec"=>0];
         // $yAxis=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Octr","Nov","Dec"];
-        $studentListBar=User::where('role','student')->take(50)->get();
+        $studentListBar=User::where('role','student')->latest()->get();
        
         $studentListBar->each(function ($student) use (&$xAxis) {
             $date = $student->created_at->format('M');
-            
             if (!array_key_exists($date, $xAxis)) {
                 $xAxis[$date] = 0;
             }
@@ -479,12 +489,14 @@ class examController extends Controller
     public function delete(request $request)
     {
         $deleterow=$request->input('checkid');
+        
         foreach($deleterow as $deleterowid){
 
             $subject=subject::find($deleterowid);
             $subject->delete();
         }
-        return redirect()->route('exam.index')->with('success','exam question successfully deleted');
+        $search=$subject->subject_id;
+        return redirect()->route('exam.index',["search"=>$search])->with('success','exam question successfully deleted');
     }
 
 

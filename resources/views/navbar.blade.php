@@ -70,8 +70,10 @@
                             {{ auth()->user()->name }}
                         </a>
                         <ul class="dropdown-menu">
+                            @if(auth()->user()->role == 'admin')
                             <li><a class="dropdown-item" href="{{  route('user.profile') }}"><i class="fa fa-cog" aria-hidden="true"></i> Setting</a></li>
                             <hr>
+                            @endif
                             <li><a class="dropdown-item" href="{{ route('user.logout') }}"><i class="fa fa-sign-out" aria-hidden="true"></i>
                                   Logout</a></li>
                             

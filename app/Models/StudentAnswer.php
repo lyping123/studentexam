@@ -9,7 +9,7 @@ class StudentAnswer extends Model
     protected $fillable=["student_id","subject_id","answer","paper_id","attempt_id"];
 
     public function ExamAttempt(){
-        return $this->belongsTo(ExamAttempt::class);
+        return $this->belongsTo(ExamAttempt::class,"attempt_id","id");
     }
     public function subject(){
         return $this->belongsTo(subject::class);

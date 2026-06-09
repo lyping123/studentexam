@@ -64,16 +64,11 @@
         <div class="col-md-6">
             <h3>Total student registration  graph</h3>
             @php
-                $xValue = [];
-                $yValue = [];
+                $labels = array_keys($xAxis);      // ["Jan","Feb",...]
+                $values = array_values($xAxis);    // [12,5,...]
                 $barColor = [];
-                foreach ($xAxis as $key => $value) {
-                    $xValue[] = $value;
-                    $yValue[] = $key;
-                    // Generate a random RGB color and format as 'rgba(r,g,b,0.7)'
-                    $r = rand(0, 255);
-                    $g = rand(0, 255);
-                    $b = rand(0, 255);
+                foreach ($labels as $_) {
+                    $r = rand(0,255); $g = rand(0,255); $b = rand(0,255);
                     $barColor[] = "rgba($r, $g, $b, 0.7)";
                 }
             @endphp
@@ -81,24 +76,29 @@
             <canvas id="myChart"></canvas>
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
-                var xValues = {!! json_encode($yValue) !!};
-                var yValues = {!! json_encode($xValue) !!};
-                var barColors = {!! json_encode($barColor) !!};
+                const labels = {!! json_encode($labels) !!};
+                const data = {!! json_encode($values) !!};
+                const colors = {!! json_encode($barColor) !!};
 
-                new Chart("myChart", {
-                    type: "bar",
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
                     data: {
-                        labels: xValues,
+                        labels,
                         datasets: [{
-                            backgroundColor: barColors,
-                            data: yValues
+                            label: 'Registrations',
+                            data,
+                            backgroundColor: colors
                         }]
                     },
                     options: {
-                        legend: {display: false},
-                        title: {
-                            display: true,
-                            text: "Total student registration"
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'Total student registration' }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { precision: 0 } }
                         }
                     }
                 });
@@ -117,7 +117,7 @@
                         @foreach ($recentStudentsAttenpts as $studentAttemp)
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>{{ $studentAttemp->user->name }}</span>
-                                
+                                {{-- @dd($studentAttemp->examAttempts) --}}
                                 @if (count($studentAttemp->examAttempts) > 1)
                                     <span class="badge bg-primary">Multiple attempts today</span>
                                 @elseif (count($studentAttemp->examAttempts) == 1)

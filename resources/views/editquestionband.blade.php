@@ -44,7 +44,7 @@
                             type="radio" 
                             name="question_type" 
                             id="picture_question"
-                            data-img="{{ $image }}"
+                            data-img="{{ asset($image) }}"
                             data-title={{ $subject->sub_title }}
                             value="picture" 
                             {{ $selectedType === 'picture' ? 'checked' : '' }} 
@@ -59,7 +59,7 @@
                         @if ($selectedType === 'subject')
                             <textarea class="form-control" name="sub_title" id="" cols="30" rows="5">{{ $subject->sub_title }}</textarea>
                         @else
-                        <input type="file" class="form-control" name="sub_image" id="sub_image" required /> 
+                        <input type="file" class="form-control" name="sub_image" id="sub_image"  /> 
                         <br>
                         <img id="preview_image" src="{{ asset($image) }}" alt="Preview" style="display:block; max-width: 200px; margin-top: 10px;">
                         <br> 
@@ -131,7 +131,7 @@ $(document).ready(function () {
             questionType.html(`<textarea class="form-control" name="sub_title" id="" cols="30" rows="5"></textarea>`);
         }else if(value=="picture"){
             questionType.html(`
-            <input type="file" class="form-control" name="sub_image" id="sub_image" required /> 
+            <input type="file" class="form-control" name="sub_image" id="sub_image"  /> 
             <br>
             <img id="preview_image" src="${img}" alt="Preview" style="display:block; max-width: 200px; margin-top: 10px;">
             <br> 

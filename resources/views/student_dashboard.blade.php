@@ -32,7 +32,7 @@
                 <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between">
-                    <span>Email</span>
+                    <span>Created date</span>
                     <span class="text-muted">{{ optional($user->created_at)->format('d-m-Y') }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">

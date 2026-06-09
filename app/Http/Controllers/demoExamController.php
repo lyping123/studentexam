@@ -34,8 +34,23 @@ class demoExamController extends Controller
         $question_paper=question_paper::find($decryptedId);
         $datentimenow=Carbon::now();
         $start_datetime=$question_paper->start_datetime;
+        if($question_paper->limit_submit_per_day){
+            $existingAttempt = ExamAttempt::where('student_id', Auth::id())
+            ->where('paper_id', $question_paper->id)
+            ->exists();
+            
+            if ($existingAttempt) {
+                return redirect()->route('student.dashboard')->withErrors('You have already submitted this exam.');
+            }
+        }
+
+        
         if($datentimenow < $start_datetime){
             return redirect()->route('student.dashboard')->withErrors("Exam not started yet. Please come back after ".$question_paper->start_datetime);
+        }
+        $examend_datetime=$question_paper->start_datetime->addMinutes($question_paper->time_limit ?? 0);
+        if($datentimenow > $examend_datetime){
+            return redirect()->route('student.dashboard')->withErrors("Exam time is over. You cannot take the exam now.");
         }
 
         if($question_paper->random_status==1){

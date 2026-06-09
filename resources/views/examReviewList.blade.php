@@ -93,7 +93,7 @@
                         @foreach ($examAttenpts as $examAttenpt)
                             <tr>
                                 <td>{{ $examAttenpt->user->name }}</td>
-                                <td>{{ $examAttenpt->question_paper->paper_name }}</td>
+                                <td>{{ $examAttenpt->question_paper->paper_name ?? "" }}</td>
                                 <td>{{ $examAttenpt->correct_answers."/".$examAttenpt->student_answer->count() }}</td>
                                 <td>{{ round(($examAttenpt->correct_answers/max(1,$examAttenpt->student_answer->count()))*100,2) }}</td>
                                 <td>{{ $examAttenpt->created_at->format('d-m-Y H:i:s') }}</td>

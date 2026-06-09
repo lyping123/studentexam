@@ -88,7 +88,7 @@
                     @foreach ($subjects as $subject)
                         <tr class="main-row" data-toggle="subtable-{{ $subject->id }}">
                             <td><input type="checkbox" name="checkid[]" value="{{ $subject->id }}" id=""></td>
-                            <td>{{ request('page')!=1?($loop->iteration+(request('page')-1)*$subjects->perPage()):$loop->iteration }}</td>
+                            <td>{{ request('page')?($loop->iteration+(request('page')-1)*$subjects->perPage()):$loop->iteration }}</td>
                             <td>
                                 @if (strpos($subject->sub_title, "\n") !== false)
                                     {!! nl2br(e($subject->sub_title)) !!}
