@@ -87,6 +87,7 @@
 
                     @foreach ($subjects as $subject)
                         <tr class="main-row" data-toggle="subtable-{{ $subject->id }}">
+
                             <td><input type="checkbox" name="checkid[]" value="{{ $subject->id }}" id=""></td>
                             <td>{{ request('page')?($loop->iteration+(request('page')-1)*$subjects->perPage()):$loop->iteration }}</td>
                             <td>
@@ -99,6 +100,9 @@
                             <td>{{ $subject->subject_title->subject_name }}</td>
                             <td>
                                 <a href="{{ route('exam.editquestionband',$subject->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
+                            </td>
+                            <td>
+                                <button></button>
                             </td>
                         </tr>
                         <tr id="subtable-{{ $subject->id }}" class="sub-table-row" style="display: none;">
