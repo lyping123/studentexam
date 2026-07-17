@@ -100,6 +100,13 @@
                                 <td>
                                     <a href="{{ route('demoexam.review.admin', $examAttenpt->id) }}" class="btn btn-primary btn-sm">View</a>
                                 </td>
+                                <td>
+                                    <form action="{{ route('demoexam.review.delete', $examAttenpt->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

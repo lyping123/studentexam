@@ -128,7 +128,7 @@ class demoExamController extends Controller
         $filters = request()->only(['student', 'question_paper', 'month']);
         $examAttenpts = ExamAttempt::filter($filters)
             ->whereIn("student_id", $studentGroup->pluck('student_id'))
-            ->paginate(10)->appends($filters);
+            ->paginate(10)->appends($filters)->orderBy('created_at', 'desc');
         
         $s_name=request()->only('student');
         
@@ -170,11 +170,7 @@ class demoExamController extends Controller
     public function demoexamShareCalendar()
     {
         $question_papers=question_paper::all();
-        $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))->get();
-
-        $s_name=request()->only('student');
-        
-        
+        $examAttenpts = ExamAttempt::filter(request()->only(['student', 'question_paper', 'month']))->get();        
         foreach ($examAttenpts as $attempt) {
             $correctCount = StudentAnswer::where('attempt_id', $attempt->id)
                 ->whereHas('subject', function ($query) {
@@ -186,6 +182,16 @@ class demoExamController extends Controller
         
         return view("examShareCalendar",compact("examAttenpts","question_papers"));
     }
+
+    public function deleteExamReview(int $id)
+    {
+        $examAttempt = ExamAttempt::findOrFail($id);
+        $examAttempt->student_answer()->delete(); // Delete related student answers
+        $examAttempt->delete(); // Delete the exam attempt
+
+        return redirect()->route('demoexam.review.list')->with('success', 'Exam review deleted successfully.');
+    }
+
 }
 
 ?>

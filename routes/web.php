@@ -64,6 +64,7 @@ Route::middleware(['role:admin'])->group(function(){
         Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review.admin");
         Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("demoexam.review.list");
         Route::get("/demoexam/share/calendar",[demoExamController::class,'demoexamShareCalendar'])->name("exam.share.calendar");
+        Route::delete("/demoexam/review/delete/{id}",[demoExamController::class,'deleteExamReview'])->name("demoexam.review.delete");
 
         Route::post('/download-docx/{id}/pretest', [DocxController::class, 'downloadDocx'])->name("pretest.docx");
         Route::post('/download-docx/{id}/examination', [DocxController::class, 'downloadwithTemplate'])->name("examination.docx");
@@ -79,7 +80,7 @@ Route::middleware(['role:student'])->group(function () {
         Route::post('/exam/submit', [demoExamController::class, 'submitExam'])->name('demoexam.submit');
         Route::get('/examreview/{ExamAttempt}',[demoExamController::class,'examReview'])->name("demoexam.review");
         Route::get("/examreviewlist",[demoExamController::class,'examReviewlist'])->name("student.demoexam.review.list");
-        Route::get("exam/history",[studentController::class,'examHistory'])->name("student.exam.history");
+        Route::get("/exam/history",[studentController::class,'examHistory'])->name("student.exam.history");
     });
     
 });
