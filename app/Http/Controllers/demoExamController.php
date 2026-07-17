@@ -128,7 +128,9 @@ class demoExamController extends Controller
         $filters = request()->only(['student', 'question_paper', 'month']);
         $examAttenpts = ExamAttempt::filter($filters)
             ->whereIn("student_id", $studentGroup->pluck('student_id'))
-            ->paginate(10)->appends($filters)->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->appends($filters);
         
         $s_name=request()->only('student');
         
